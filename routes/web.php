@@ -253,7 +253,8 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::get('/store/catalogs/{type}/{mark}', 'CatalogueController@getModels')->name('CatalogueMark');
         Route::get('/store/catalogs/{type}/{mark}/{model}', 'CatalogueController@getModifications')->name('CatalogueModifications');
         Route::get('/store/catalogs/{type}/{mark}/{model}/{modification}/{grp?}', 'CatalogueController@getGroups')->name('CatalogueGroups');
-        Route::get('/store/catalogs/{type}/{mark}/{model}/{modification}/{grp}/{subgrp}', 'CatalogueController@getNumbers')->name('CatalogueNumbers');
+
+        Route::get('/store/catalogs/search', 'CatalogueController@getByVin')->name('CatalogueVinSearch');
 
         #Каталоги редиректы
         Route::get('/store/catalogs/{type}', function(){return redirect()->route('CatalogueMarks');});

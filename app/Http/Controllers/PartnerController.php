@@ -283,7 +283,16 @@ class PartnerController extends Controller
 
     public function checkPhone(Request $request)
     {
-        $phone_exists = User::where('phone', $request->phone)->exists();
+        $user = User::query()->where('phone',$request->phone)->first();
+        $phone_exists = $user && $user->exists();
+        $isOwner = $user && ($user->hasRole('Владелец') && $user->company_id == Auth::user()->company_id);
+
+        if ($isOwner) {
+            return response()->json([
+                'forbidden' => true,
+                'code' =>  null
+            ], 200);
+        }
 
         if($phone_exists) {
             $code = rand(1111, 9999);

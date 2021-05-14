@@ -420,20 +420,24 @@ class partnerDialog extends Modal{
             }
         })
             .then(response => {
-                this.phone_checked = true;
                 let data = response.data;
 
-                let code_element = this.current_dialog.querySelector('[name="code"]');
-
-                if(data.phone_exists) {
-                    code_element.parentElement.classList.remove('hide');
-                    code_element.disabled = false;
-                    this.phone_checked = false;
-                }
-                else {
-                    code_element.parentElement.classList.add('hide');
-                    code_element.disabled = true;
+                if (data.forbidden) {
+                    notification.notify( 'error', 'Номер принадлежит владельцу данной компании');
+                    return false;
+                } else {
                     this.phone_checked = true;
+                    let code_element = this.current_dialog.querySelector('[name="code"]');
+                    if(data.phone_exists) {
+                        code_element.parentElement.classList.remove('hide');
+                        code_element.disabled = false;
+                        this.phone_checked = false;
+                    }
+                    else {
+                        code_element.parentElement.classList.add('hide');
+                        code_element.disabled = true;
+                        this.phone_checked = true;
+                    }
                 }
             })
             .catch(response => {

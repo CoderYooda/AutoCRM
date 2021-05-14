@@ -1,6 +1,7 @@
 @extends($request['view_as'] == 'json' && $request['target'] == 'ajax-tab-content' ? 'classic.layouts.metaXHR' : 'classic.catalogue.index')
 
 @section('meta')
+    @include(get_template() . '.catalogue.search')
     <div style="overflow: auto" class="box-lister catalogue">
         <div id="ajax-table-store" class="">
             @if( isset($result->breadcrumbs))
@@ -12,6 +13,37 @@
 
             <div class="box">
                 <div class="main-image-area">
+                {{--<div class="main-image imageArea">--}}
+                    {{--<span class="imageLayout">--}}
+                        {{----}}
+                        {{--@if(isset($result->image_src) && $result->image_src && $result->image_src_header)--}}
+                            {{--<img rel="preload" src="{{ 'data:image/png;base64, ' . $result->image_src }}">--}}
+                        {{--@else--}}
+                            {{--<img src="{{ $result->image }}">--}}
+                        {{--@endif--}}
+                        {{----}}
+                        {{--<?php if (count($labels) > 0) { ?>--}}
+                        {{--<?php foreach ($labels as $coordinate) { ?>--}}
+                                {{--<span class="ladel"--}}
+                                      {{--data-left="<?php echo $coordinate->topX ?>"--}}
+                                      {{--data-top="<?php echo $coordinate->topY ?>"--}}
+                                      {{--title="<?php echo $coordinate->title ?>"--}}
+                                      {{--data-index="<?php echo $coordinate->index ?>"--}}
+                                      {{--style="position:absolute; padding:1px 5px;--}}
+                                          {{--left: <?php echo $coordinate->topX ?>px;--}}
+                                          {{--top: <?php echo $coordinate->topY ?>px;--}}
+                                          {{--min-width: <?php echo $coordinate->bottomX - $coordinate->topX ?>px;--}}
+                                          {{--min-height: <?php echo $coordinate->bottomY - $coordinate->topY ?>px;--}}
+                                          {{--line-height:  <?php echo $coordinate->bottomY - $coordinate->topY ?>px;--}}
+                                          {{--font-size:  <?php echo $coordinate->bottomY - $coordinate->topY - 2 ?>px;"></span>--}}
+                            {{--<?php } ?>--}}
+                        {{--<?php } ?>--}}
+                    {{--</span>--}}
+                {{--</div>--}}
+
+
+
+
                     <div class="main-image imageArea" id="imageArea">
                         <div class="imageLayout" id="imageLayout">
                             @if(isset($result->image_src) && $result->image_src && $result->image_src_header)
@@ -60,6 +92,8 @@
                             @endif
                         </div>
                     </div>
+
+
                 </div>
             </div>
                 @if(isset($result->numbers) && count($result->numbers) > 0)

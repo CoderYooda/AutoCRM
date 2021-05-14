@@ -12,8 +12,6 @@ use App\Http\Controllers\HelpController as HC;
 
 class CatalogueController extends Controller
 {
-
-
     public static function getMarks(Request $request)
     {
         $types = CatType::with('marks')->get();
@@ -69,6 +67,25 @@ class CatalogueController extends Controller
 
         //return view(get_template() . '.catalogue.marks', compact('types', 'request'));
 //        return $types;
+    }
+
+    public function getByVin(Request $request)
+    {
+        $href = '/search2' . '?text=' . $request['text'];
+        $acat = new ACat('ac0312e3c94b0fc48d6c01fea6828bee');
+        $result = $acat->getModels($href);
+
+        $content = view(get_template() . '.catalogue.vinresult', compact('result', 'request'));
+        $target = HC::selectTarget();
+        if ($request['view_as'] != null && $request['view_as'] == 'json') {
+            return response()->json([
+                'target' => $target,
+                'page' => 'Модели',
+                'html' => $content->render()
+            ]);
+        } else {
+            return $content;
+        }
     }
 
     public function getModels(Request $request, $type, $mark)
