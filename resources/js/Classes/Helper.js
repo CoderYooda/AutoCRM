@@ -40,6 +40,7 @@ import referalPartnerDialog from "./Referal/ReferalDialog";
 import priceDialog from './Price/PriceDialog';
 
 import partnerPage from "./Partner/PartnerPage";
+import storecatalogsPage from "./Catalogs/StorecatalogsPage";
 import storePage from "./Store/StorePage";
 import actionsPage from "./Actions/ActionsPage";
 import settingsPage from "./Settings/SettingsPage";
@@ -132,6 +133,7 @@ const pages = {
     statisticshowPage,
     adminPage,
     shopPage,
+    storecatalogsPage,
 };
 
 class Helper{
@@ -204,7 +206,10 @@ class Helper{
         let className = '';
         if(Array.isArray(classNameStr)){
             classNameStr.forEach(function(item, i, arr) {
-                className = className + item;
+                if(i < 2){
+                    className = className + item;
+                    console.log(className);
+                }
             });
         } else {
             className = classNameStr;

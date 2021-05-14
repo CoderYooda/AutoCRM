@@ -247,6 +247,23 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::post('/ddsarticle/{id}/select', 'DdsarticleController@select')->name('SelectDdsarticle');
         Route::post('/ddsarticle/dialog/search', 'DdsarticleController@dialogSearch')->name('DdsarticleDialogSearch');
 
+        #Каталоги
+        Route::get('/store', 'CatalogueController@index')->name('CatalogueIndex'); // Строгое название
+        Route::get('/store/catalogs', 'CatalogueController@getMarks')->name('CatalogueMarks');
+        Route::get('/store/catalogs/{type}/{mark}', 'CatalogueController@getModels')->name('CatalogueMark');
+        Route::get('/store/catalogs/{type}/{mark}/{model}', 'CatalogueController@getModifications')->name('CatalogueModifications');
+        Route::get('/store/catalogs/{type}/{mark}/{model}/{modification}/{grp?}', 'CatalogueController@getGroups')->name('CatalogueGroups');
+
+        Route::get('/store/catalogs/search', 'CatalogueController@getByVin')->name('CatalogueVinSearch');
+
+        #Каталоги редиректы
+        Route::get('/store/catalogs/{type}', function(){return redirect()->route('CatalogueMarks');});
+
+
+        //Route::post('/icat/models', 'CatalogueController@getModels')->name('CatalogueModels');
+//        Route::post('/icat/marks', 'CatalogueController@getMarks')->name('CatalogueMarks');
+        //Route::post('/icat/modifications', 'CatalogueController@getModifications')->name('CatalogueModifications');
+
         #Склады
         Route::get('/store', 'StoreController@index')->name('StoreIndex'); // Строгое название
         Route::post('/store/tabledata', 'StoreController@tableData')->name('StoreTableProductData');

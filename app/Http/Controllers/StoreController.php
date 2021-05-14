@@ -10,6 +10,8 @@ use App\Http\Requests\StoreImportRequest;
 use App\Http\Requests\StoreRequest;
 use App\Jobs\StoreImportProduct;
 use App\Models\Company;
+use App\Models\iCat\CatMark;
+use App\Models\iCat\CatType;
 use App\Models\ImportHistory;
 use App\Models\Product;
 use App\Models\Store;
@@ -155,6 +157,19 @@ class StoreController extends Controller
         }
         $trinity = null; #TODO
         return view(get_template() . '.store.index', compact('page', 'categories', 'request', 'cat_info', 'trinity', 'data', 'breadcrumbs'));
+    }
+
+    public static function catalogueTab($request)
+    {
+        $page = 'Каталоги';
+        $types = CatalogueController::getMarks();
+//        $marks = CatMark::all();
+
+
+        if ($request['view_as'] == 'json' && $request['target'] == 'ajax-table-store') {
+            return view(get_template() . '.catalogue.index', compact('types', 'request'));
+        }
+        return view(get_template() . '.catalogue.index', compact('types', 'request'));
     }
 
     public function exportToCSV(Store $store)
