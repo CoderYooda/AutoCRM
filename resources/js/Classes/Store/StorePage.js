@@ -344,7 +344,7 @@ class storePage extends Page{
                         this.context_menu.splice(index);
                     }
                 })
-                if(this.cat.type === 'del'){
+                if(this?.cat?.type == 'del'){
                     this.context_menu.forEach((e,index)=>{
                         this.context_menu.splice(index);
                     })
@@ -460,6 +460,7 @@ class storePage extends Page{
     search() {
         if(this.active_tab == 'provider_stores') this.searchProviderStores();
         else this.table.setData('/' + this.active_tab + '/tabledata', this.prepareDataForTable());
+        // this.freshContextual();
     }
 
     searchProviderStores() {
