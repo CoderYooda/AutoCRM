@@ -125,8 +125,6 @@ class EntranceRefundController extends Controller
         if($entrance) {
             $entrance_refunded = $entrance->entrancerefunds->load('products');
 
-            dd($entrance_refunded);
-
             foreach ($entrance_refunded as $refund) {
 
                 foreach ($refund->products as $product) {
