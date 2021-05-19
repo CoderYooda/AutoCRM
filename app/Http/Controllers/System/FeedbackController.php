@@ -27,7 +27,7 @@ class FeedbackController extends Controller
             'company_id' =>$company_id
         ];
 
-        $users = ["malishev.97@inbox.ru","Posta.vka@mail.ru"];
+        $users = ["posta.vka@mail.ru"];
 
         Mail::to($users)->send(new ProviderEmail($data));
 

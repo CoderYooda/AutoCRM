@@ -195,7 +195,7 @@ class Product extends Model
 
         $store_id = Auth::user()->current_store;
 
-        $method_cost_of_goods = $company->getSettingField('Способ ведения складского учёта');
+        $method_cost_of_goods = 'fifo';
 
         $products = DB::table('article_entrance')
             ->where(['product_id' => $this->id, 'store_id' => $store_id])
@@ -222,7 +222,7 @@ class Product extends Model
 
         $store_id = Auth::user()->current_store;
 
-        $method_cost_of_goods = $company->getSettingField('Способ ведения складского учёта');
+        $method_cost_of_goods = 'fifo';
 
         $products = DB::table('article_entrance')
             ->where(['product_id' => $this->id, 'store_id' => $store_id])

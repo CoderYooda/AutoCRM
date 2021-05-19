@@ -203,7 +203,6 @@ class ShipmentController extends Controller
     public function store(ShipmentsRequest $request)
     {
         PermissionController::canByPregMatch($request['id'] ? 'Редактировать продажи' : 'Создавать продажи');
-
         DB::beginTransaction();
 
         try {
@@ -243,6 +242,7 @@ class ShipmentController extends Controller
                 ], 422);
             }
 
+
             if ($shipment->exists) {
                 $this->message = 'Продажа обновлена';
                 #Отнимаем с баланса контакта
@@ -252,6 +252,7 @@ class ShipmentController extends Controller
                 $shipment->manager_id = Auth::user()->partner->id;
                 $this->message = 'Продажа сохранена';
             }
+
 
             $shipment->fill($request->only($shipment->fields));
             $shipment->summ = 0;
@@ -283,7 +284,6 @@ class ShipmentController extends Controller
 
                 #Возвращаем товары в те поступления, с которых он был взят
                 $return_products = DB::table('article_shipment')->where('shipment_id', $shipment->id)->get();
-
                 foreach ($return_products as $product) {
                     Entrance::decrementReleasedCount($product->entrance_id, $product->article_id, $product->count);
                 }
@@ -291,7 +291,6 @@ class ShipmentController extends Controller
                 #Очищаем article_shipment
                 $shipment->products()->sync([]);
             }
-
             foreach ($products as $product) {
                 $count = $request['products'][$product->id]['count'];
                 $price = $request['products'][$product->id]['price'];
