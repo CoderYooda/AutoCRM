@@ -15,7 +15,7 @@ class ShipmentsRequest extends FormRequest
 {
     public function authorize()
     {
-        if($this->id){
+        if($this->id && $this->id !== 'undefined'){
             $shipment = Shipment::find($this->id);
             return $shipment->company_id == Auth::user()->company->id;
         }
