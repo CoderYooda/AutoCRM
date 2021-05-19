@@ -11,15 +11,15 @@
                         <li>{{ $param->name }} | {{ $param->value }}</li>
                     @endforeach
                 </ol>
+                <a href="{{ route('CatalogueGroups', [
+                    'type' => $result->vins[0]->type,
+                    'mark' => $result->vins[0]->mark,
+                    'model' => $result->vins[0]->model,
+                    'modification' => $result->vins[0]->modification,
+                    ]) }}" class="button primary">Показать каталог</a>
             @else
                 Результатов по запросу "{{ request('text') }}" не найдено
             @endif
-            <a href="{{ route('CatalogueGroups', [
-            'type' => $result->vins[0]->type,
-            'mark' => $result->vins[0]->mark,
-            'model' => $result->vins[0]->model,
-            'modification' => $result->vins[0]->modification,
-            ]) }}" class="button primary">Показать каталог</a>
         </div>
     </div>
 @endsection
