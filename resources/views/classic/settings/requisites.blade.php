@@ -23,7 +23,7 @@
 
                     <div class="form-group mt-15">
                         <label>Наименование организации</label>
-                        <input name="name" type="text" class="form-control" placeholder="Рога и Копыта" value="{{ !$company->is_company ? $company->name : '' }}">
+                        <input name="name" type="text" class="form-control" placeholder="Наименование компании" value="{{ !$company->is_company ? $company->name : '' }}">
                     </div>
 
                     <div class="form-group mt-15">
