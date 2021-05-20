@@ -59,7 +59,7 @@
     </tr>
     <tr height=15 style='height:11.25pt'>
         <td height=15 style='height:11.25pt'></td>
-        <td colspan=3 rowspan=2 class=xl89>Сч. №</td>
+        <td colspan=3 rowspan=2 class=xl89>Кор. Сч. №</td>
         <td colspan=16 rowspan=2 class=xl97>{{ $data['cs'] ?? '' }}</td>
     </tr>
     <tr height=15 style='height:11.25pt'>
@@ -72,7 +72,7 @@
         <td colspan=7 class=xl94>{{ $data['inn'] ?? '' }}</td>
         <td colspan=2 class=xl93 style='border-left:none'>КПП</td>
         <td colspan=7 class=xl94>{{ $data['kpp'] ?? '' }}</td>
-        <td colspan=3 rowspan=4 class=xl89>Сч. №</td>
+        <td colspan=3 rowspan=4 class=xl89>Рас. Сч. №</td>
         <td colspan=16 rowspan=4 class=xl90>{{ $data['rs'] ?? '' }}</td>
     </tr>
     <tr height=15 style='height:11.25pt'>
