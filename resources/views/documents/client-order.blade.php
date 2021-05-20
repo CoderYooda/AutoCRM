@@ -557,7 +557,7 @@
     </tr>
     <tr class="R3">
         <td><span></span></td>
-        <td class="R3C2" colspan="9"><span style="white-space:nowrap">Счёт&nbsp;№&nbsp;{{ $data['id'] }}</span></td>
+        <td class="R3C2" colspan="9"><span style="white-space:nowrap">Счёт&nbsp;№&nbsp;ЗАК_{{ $data['id'] }}</span></td>
         <td><span></span></td>
         <td><span></span></td>
         <td><span></span></td>

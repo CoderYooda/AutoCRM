@@ -91,7 +91,7 @@
     </tr>
     <tr height=46 style='mso-height-source:userset;height:34.5pt'>
         <td height=46 style='height:34.5pt'></td>
-        <td colspan=37 class=xl88>Счет на оплату №{{ $data['id'] ?? '' }} от {{ $data['created_at'] }} г.</td>
+        <td colspan=37 class=xl88>Счет № ПРОД_{{ $data['id'] ?? '' }} от {{ $data['created_at'] }} г.</td>
     </tr>
     <tr height=15 style='height:11.25pt'>
         <td height=15 colspan=38 style='height:11.25pt;mso-ignore:colspan'></td>
