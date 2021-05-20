@@ -24,7 +24,7 @@
                     <a href="{{$breadcrumbUrl}}?active_tab=catalogue">{{ $breadcrumb->name }}</a>
                 @endif
             @else
-            <span class="breadcrumbs_current">{{ $breadcrumb->name }}</span>
+            <span class="breadcrumbs_current">{{ $breadcrumb->name ?? 'не указано'}}</span>
             @endif
         @endforeach
     </div>
