@@ -97,7 +97,23 @@ class DocumentController extends Controller
 
         $data = [];
 
+        //Компания
+        $data['company_name'] = $company->official_name;
+        $data['legal_address'] = $company->legal_address;
+        $data['inn'] = $company->inn;
+        $data['kpp'] = $company->kpp;
+        $data['is_company'] = $company->is_company;
+        $data['owner'] = $company->owner;
+        $data['auditor'] = $company->auditor;
+        $data['bank'] = $company->bank;
+        $data['cs'] = $company->cs;
+        $data['rs'] = $company->rs;
+        $data['ogrn'] = $company->ogrn;
+        $data['bik'] = $company->bik;
+
         $data['view'] = $view_name;
+
+
 
         if($request->doc == 'client-order') {
 
@@ -161,18 +177,7 @@ class DocumentController extends Controller
 
             $data['manager_name'] = Auth::user()->partner->official_name;
 
-            //Компания
-            $data['company_name'] = $company->official_name;
-            $data['legal_address'] = $company->legal_address;
-            $data['inn'] = $company->inn;
-            $data['kpp'] = $company->kpp;
-            $data['is_company'] = $company->is_company;
-            $data['owner'] = $company->owner;
-            $data['auditor'] = $company->auditor;
-            $data['bank'] = $company->bank;
-            $data['cs'] = $company->cs;
-            $data['rs'] = $company->rs;
-            $data['ogrn'] = $company->ogrn;
+
 
             //Партнёр
             $data['partner_name'] = $shipment->partner->official_name;

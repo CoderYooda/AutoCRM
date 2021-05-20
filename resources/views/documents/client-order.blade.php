@@ -511,6 +511,7 @@
         <col width="0">
     </colgroup>
     <tbody>
+
     <tr class="R0">
         <td><span></span></td>
         <td class="R0C1" colspan="6"><span style="white-space:nowrap">ПОСТАВЩИК:&nbsp;&nbsp;{{ $data['company_name'] }}</span></td>
@@ -556,13 +557,47 @@
     </tr>
     <tr class="R3">
         <td><span></span></td>
-        <td class="R3C1"><span></span></td>
-        <td class="R3C2" colspan="9"><span style="white-space:nowrap">Заказ клиента&nbsp;№&nbsp;{{ $data['id'] }}</span></td>
+        <td class="R3C2" colspan="9"><span style="white-space:nowrap">Счёт&nbsp;№&nbsp;{{ $data['id'] }}</span></td>
         <td><span></span></td>
         <td><span></span></td>
         <td><span></span></td>
         <td><span></span></td>
         <td></td>
+    </tr>
+    <tr class="R0" height=17 style='height:12.75pt'>
+        <td height=17 width=7 style='height:12.75pt;width:5pt'></td>
+        <td class="R5C1" colspan=3 rowspan=2 class=xl91 width=370 style='width:280pt'>{{ $data['bank'] ?? '' }}</td>
+        <td class="R5C1" colspan=3 class=xl95 width=63 style='border-left:none;width:48pt'>БИК</td>
+        <td class="R5C1" colspan=4 class=xl96 width=272 style='border-left:none;width:206pt;'>{{ $data['bik'] ?? '' }}</td>
+    </tr>
+    <tr class="R0" height=15 style='height:11.25pt'>
+        <td height=15 style='height:11.25pt'></td>
+        <td class="R5C1" colspan=3 rowspan=2 >Кор. Сч. №</td>
+        <td class="R5C1" colspan=4 rowspan=2 style="border-top: none;">{{ $data['cs'] ?? '' }}</td>
+    </tr>
+    <tr class="R0" height=15 style='height:11.25pt'>
+        <td height=15 style='height:11.25pt'></td>
+        <td class="R5C1" colspan=3 class=xl92>Банк получателя</td>
+    </tr>
+    <tr class="R0" height=17 style='height:12.75pt'>
+        <td height=17 style='height:12.75pt'></td>
+        <td class="R5C1" colspan=2 class=xl93 style="border-right: none">ИНН</td>
+        <td class="R5C1" colspan=1 class=xl94 style="border-left: none;">{{ $data['inn'] ?? '' }}</td>
+        <td class="R5C1" colspan=3 rowspan=3 class=xl89>Рас. Сч. №</td>
+        <td class="R5C1" colspan=4 rowspan=3 class=xl90>{{ $data['rs'] ?? '' }}</td>
+    </tr>
+    <tr class="R0" height=15 style='height:11.25pt'>
+        <td height=15 style='height:11.25pt'></td>
+        <td class="R5C1" colspan=1 class=xl93 style='border-right: none'>КПП</td>
+        <td class="R5C1" colspan=2 class=xl94 style="border-left: none;">{{ $data['kpp'] ?? '' }}</td>
+
+    </tr>
+    <tr class="R0" height=15 style='height:11.25pt'>
+        <td height=15 style='height:11.25pt'></td>
+        <td class="R5C1" colspan=3 class=xl92>Продавец: {{ $data['company_name'] ?? '' }}</td>
+    </tr>
+    <tr class="R0" height=15 style='height:11.25pt'>
+        <td height=15 colspan=38 style='height:11.25pt;mso-ignore:colspan'></td>
     </tr>
     <tr class="R2">
         <td><span></span></td>
@@ -585,7 +620,7 @@
     <tr class="R0">
         <td><span></span></td>
         <td class="R5C1" colspan="3">Заказчик: {{ $data['partner_name'] }} </td>
-        <td class="R5C1" colspan="6">телефон: {{ $data['phone'] }}</td>
+        <td class="R5C1" colspan="7">телефон: {{ $data['phone'] }}</td>
         <td><span></span></td>
         <td><span></span></td>
         <td><span></span></td>
