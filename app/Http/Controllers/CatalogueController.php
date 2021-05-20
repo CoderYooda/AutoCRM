@@ -228,7 +228,7 @@ class CatalogueController extends Controller
         $acat = new ACat('ac0312e3c94b0fc48d6c01fea6828bee');
         $result = $acat->getGroups($href);
 
-
+//        dd($result);
 
         $content = view(get_template() . '.catalogue.numbers', compact('type','mark', 'model', 'grp', 'subgrp', 'result', 'request'));
         $target = HC::selectTarget();
