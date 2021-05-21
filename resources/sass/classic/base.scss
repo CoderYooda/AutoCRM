@@ -940,6 +940,10 @@ select:focus + .select-selected{
     overflow: hidden;
     text-overflow: ellipsis;
 }
+.select-items div:hover {
+    height: auto;
+    white-space: initial;
+}
 
 .select-items div{
     border-top: none;

@@ -177,10 +177,10 @@ class providerCartDialog extends Modal{
 
             let target_element = element.closest('.provider').querySelector('.pickup_address_id');
 
-            if(target_element) {
-                if (selected_index == 0) target_element.classList.remove('d-none');
-                else target_element.classList.add('d-none');
-            }
+            // if(target_element) {
+            //     if (selected_index == 0) target_element.classList.remove('d-none');
+            //     else target_element.classList.add('d-none');
+            // }
 
         }, 100);
     }
@@ -190,8 +190,6 @@ class providerCartDialog extends Modal{
         setTimeout(() => {
 
             let selected_index = element.selectedIndex; // 0 - Самовывоз, 1 - доставка
-
-            console.log(selected_index);
 
             let pickup_element = element.closest('.provider').querySelector('.pickup_address_id');
             let delivery_element = element.closest('.provider').querySelector('.delivery_address_id');

@@ -16,6 +16,7 @@ use App\Services\ProviderService\Services\Providers\AvtoImport;
 use App\Services\ProviderService\Services\Providers\ArmTek;
 use App\Services\ProviderService\Services\Providers\MskRechie;
 use App\Services\ProviderService\Services\Providers\Partkom;
+use App\Services\ProviderService\Services\Providers\ProfitLiga;
 use App\Services\ProviderService\Services\Providers\Rossko;
 use App\Services\ProviderService\Services\Providers\StParts;
 use App\Services\ProviderService\Services\Providers\Trinity;
@@ -43,6 +44,7 @@ class AppProviderStoreService extends ServiceProvider
             FavoritParts::class,
             Rossko::class,
             Partkom::class,
+            ProfitLiga::class,
         ], [ ProviderInterface::class ]);
 
         $this->app->bind(Providers::class, function (Application $app) {
