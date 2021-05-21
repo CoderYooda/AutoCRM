@@ -141,15 +141,13 @@ class CatalogueController extends Controller
 //        $model = CatModel::find($request['model_id']);
 //        if(!$modifications->count()) {
 
-        $m = CatMark::where('value', $mark)->first();
-        $t = CatType::where('value', $type)->first();
-        $mo = CatModel::where('name', $model)->first();
+//        $m = CatMark::where('value', $mark)->first();
+//        $t = CatType::where('value', $type)->first();
+//        $mo = CatModel::where('name', $model)->first();
 
             $href = '/' . $type . '/' . $mark . '/' . $model . '?' . http_build_query($request->except('active_tab', 'view_as'));
-//        dd($href);
             $acat = new ACat('ac0312e3c94b0fc48d6c01fea6828bee');
             $result = $acat->getModificationsByModel($href);
-//            dd($result);
         if(isset($result->modifications)){
             $content = view(get_template() . '.catalogue.modifications', compact('type','mark', 'model', 'result', 'request'));
         } elseif (isset($result->groups)){
@@ -177,9 +175,6 @@ class CatalogueController extends Controller
         $href = '/' . $type . '/' . $mark . '/' . $model . '/' . $modification . $attaches . '?' . http_build_query($request->except('active_tab', 'view_as'));
         $acat = new ACat('ac0312e3c94b0fc48d6c01fea6828bee');
         $result = $acat->getGroups($href);
-//        dd($result);
-//        dd((isset($result->units) || isset($result->groups)));
-//        dd($result->group->image);
         if(isset($result->group) && $result->group && is_object($result->group) && $result->group->image){
             $opts = array('http' =>
                 array(
@@ -189,7 +184,6 @@ class CatalogueController extends Controller
             );
             $context = stream_context_create($opts);
             $image = file_get_contents($result->group->image, false, $context);
-//            dd($http_response_header);
             foreach ($http_response_header as $key => $h){
 
                 if(str_contains($h, 'Content-Type')){
@@ -227,9 +221,6 @@ class CatalogueController extends Controller
         $href = '/' . $type . '/' . $mark . '/' . $model . '/' . $modification . '/' . $grp . '/' . $subgrp . '?' . http_build_query($request->except('active_tab', 'view_as'));
         $acat = new ACat('ac0312e3c94b0fc48d6c01fea6828bee');
         $result = $acat->getGroups($href);
-
-//        dd($result);
-
         $content = view(get_template() . '.catalogue.numbers', compact('type','mark', 'model', 'grp', 'subgrp', 'result', 'request'));
         $target = HC::selectTarget();
 
