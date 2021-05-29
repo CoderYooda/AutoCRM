@@ -85,10 +85,10 @@ font-family:"Times New Roman", serif;mso-font-charset:204'>Универсаль�
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=4 height=15 class=xl65 style='height:11.25pt'>Статус:<span
                 style='mso-spacerun:yes'> </span></td>
-        <td colspan=2 class=xl104>1</td>
+        <td colspan=2 class=xl104>2</td>
         <td colspan=2 class=xl105 style='border-left:none'> </td>
         <td colspan=16 class=xl102 style='border-left:none'>Адрес</td>
-        <td colspan=58 class=xl103>{{ $data['legal_address'] ?? '---' }}</td>
+        <td colspan=58 class=xl103>{{ $data['legal_address'] !== "" ? $data['legal_address'] : $data['actual_address']  }}</td>
         <td colspan=3 class=xl67>(2а)</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
@@ -216,7 +216,7 @@ none;width:18pt'>код</td>
         <td colspan=6 class=xl93 width=72 style='border-left:none;width:54pt'>11</td>
     </tr>
     @foreach($data['products'] as $product_id => $product)
-        @continue(!isset($product['id']))
+        @continue(!isset($product['article']))
         <tr height=16 style='mso-height-source:userset;height:12.0pt'>
             <td colspan=2 height=16 class=xl93 width=24 style='height:12.0pt;width:18pt'>{{ ($loop->index + 1) }}</td>
             <td colspan=6 class=xl94 width=72 style='border-left:none;width:54pt'>---</td>
