@@ -88,7 +88,7 @@ font-family:"Times New Roman", serif;mso-font-charset:204'>Универсаль�
         <td colspan=2 class=xl104>2</td>
         <td colspan=2 class=xl105 style='border-left:none'> </td>
         <td colspan=16 class=xl102 style='border-left:none'>Адрес</td>
-        <td colspan=58 class=xl103>{{ $data['legal_address'] !== "" ? $data['legal_address'] : $data['actual_address']  }}</td>
+        <td colspan=58 class=xl103>{{ $data['legal_address'] !== "" ? $data['legal_address'] : ($data['actual_address'] ?? 'Не указано')  }}</td>
         <td colspan=3 class=xl67>(2а)</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
