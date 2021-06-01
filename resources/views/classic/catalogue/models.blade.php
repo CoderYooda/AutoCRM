@@ -16,14 +16,16 @@
             {{--@endif--}}
             <div id="cat_box" class="">
                 <div class="cat_item_container">
-                    @foreach($result->models as $model)
-                        <a class="ajax-nav" href="{{ './' . $result->breadcrumbs[2]->url . '/' . ($model->id ?? $model->short_name) . '?active_tab=catalogue' }}">
-                            <div class="box model_item">
-                                <img src="{{ $model->image ?? $model->img ?? asset('images/no-ph.svg') }}" alt="">
-                                {{ $model->name ?? $model->short_name }}
-                            </div>
-                        </a>
-                    @endforeach
+                    <div class="bricks">
+                        @foreach($result->models as $model)
+                            <a class="ajax-nav" href="{{ './' . $result->breadcrumbs[2]->url . '/' . ($model->id ?? $model->short_name) . '?active_tab=catalogue' }}">
+                                <div class="box model_item">
+                                    <img src="{{ $model->image ?? $model->img ?? asset('images/no-ph.svg') }}" alt="">
+                                    {{ $model->name ?? $model->short_name }}
+                                </div>
+                            </a>
+                        @endforeach
+                    </div>
                 </div>
             </div>
         </div>

@@ -256,6 +256,8 @@ Route::group(['middleware' => ['web', 'auth', 'banned']], function () {
         Route::get('/store/catalogs/{type}/{mark}/{model}/{modification}/{grp}/{subgrp}', 'CatalogueController@getNumbers')->name('CatalogueNumbers');
 
         Route::get('/store/catalogs/search', 'CatalogueController@getByVin')->name('CatalogueVinSearch');
+        Route::post('/store/catalogs/add_favour', 'CatalogueController@addToFavorite')->name('CatalogueAddToFavour');
+        Route::post('/store/catalogs/getByVin', 'CatalogueController@getByVin')->name('CatalogueGetByVin');
 
         #Каталоги редиректы
         Route::get('/store/catalogs/{type}', function(){return redirect()->route('CatalogueMarks');});

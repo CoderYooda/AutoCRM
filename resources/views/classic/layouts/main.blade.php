@@ -123,7 +123,7 @@
                         <li class="top-nav-item dropdown pointer d-flex align-items-center p-10" onclick="window.helper.openModal(this, event)">
                             <div>
                                 <div style="line-height: 14px;">{{ Auth::user()->company->name ?? 'Название компании' }}</div>
-                                <div style="font-size: 12px;font-weight: bold;line-height: 14px;">{{ Auth::user()->store->name }}</div>
+                                <div style="font-size: 12px;font-weight: bold;line-height: 14px;">{{ Auth::user()->store->name  ?? 'Склад' }}</div>
                             </div>
 
                             <div class="dropdown_container">

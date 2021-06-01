@@ -7,43 +7,85 @@
             @if( isset($result->breadcrumbs))
                 @include(get_template() . '.catalogue.breadcrumbs', ['breadcrumbs' => $result->breadcrumbs])
             @endif
-            <div>
+            <div class="p-25 pt-0 pb-0">
                 <h1>Каталог запчастей {{ (isset($result->model) && isset($result->model->name)) ? $result->model->name : '' }}</h1>
             </div>
-            <div id="cat_box" class="">
-                <div class="cat_item_container">
-
+            <div id="cat_box" class="p-25 pt-0">
+                <div class="cat_item_container withDrops">
                         @if(isset($native))
+                        {{--isset($result->id) && $result->id !== null--}}
+                    {{--@dd($result)--}}
                             <div class="d-flex" style="flex-wrap: wrap;">
                                 @foreach(($result->groups ?? $result->units) as $group)
-                                    <div style="flex-grow: 1;width: 100%;" class="cat-fl-box">
-                                    <h2>{{ $group->name }}</h2>
-                                        @if(isset($group->childs) && $group->childs != null)
-                                            @foreach($group->childs as $child)
-                                                @if(isset($child->childs) && $child->childs != null)
+                                    <div class="level lbox">
+                                        <span class="push">{{ $group->name }}</span>
 
-                                                    <div class="flex-1 cat-row box">
-                                                        <h3>{{ $child->name }}</h3>
-                                                    @foreach($child->childs as $child)
-                                                        <a class="ajax-nav" href="{{ './' . end($result->breadcrumbs)->url . '/' . $child->short_name ?? 'error' }}?active_tab=catalogue">
-                                                            {{ $child->name }}
-                                                        </a>
-                                                    @endforeach
+                                        @if(isset($group->childs) && $group->childs != null)
+                                            <div class="dropdown hide">
+                                                @foreach($group->childs as $child)
+                                                    <div class="level">
+                                                        <span class="push">{{ $child->name }}</span>
+                                                            @if(isset($child->childs) && $child->childs != null)
+                                                            <div class="dropdown hide">
+                                                                @foreach($child->childs as $child)
+                                                                    <a class="ajax-nav" href="{{ './' . end($result->breadcrumbs)->url . '/' . $child->short_name ?? 'error' }}?active_tab=catalogue">
+                                                                        {{ $child->name }}
+                                                                    </a>
+                                                                @endforeach
+                                                            </div>
+                                                            @else
+                                                            <div class="dropdown hide">
+                                                                <a class="ajax-nav" href="">
+                                                                    {{ $child->name }}
+                                                                </a>
+                                                            </div>
+                                                            @endif
                                                     </div>
-                                                @else
-                                                    <a class="ajax-nav" href="">
-                                                        {{ $child->name }}
-                                                    </a>
-                                                @endif
-                                            @endforeach
+                                                @endforeach
+                                            </div>
                                         @endif
                                     </div>
+
+
+
+
+
+
+
+
+
+
+
+                                    {{--<div style="flex-grow: 1;width: 100%;" class="cat-fl-box level">--}}
+                                        {{--<div class="child invisible">--}}
+
+                                            {{--@if(isset($group->childs) && $group->childs != null)--}}
+                                                {{--@foreach($group->childs as $child)--}}
+                                                    {{--@if(isset($child->childs) && $child->childs != null)--}}
+
+                                                        {{--<div class="flex-1 cat-row box">--}}
+                                                            {{--<h3>{{ $child->name }}</h3>--}}
+                                                            {{--@foreach($child->childs as $child)--}}
+                                                                {{--<a class="ajax-nav" href="{{ './' . end($result->breadcrumbs)->url . '/' . $child->short_name ?? 'error' }}?active_tab=catalogue">--}}
+                                                                    {{--{{ $child->name }}--}}
+                                                                {{--</a>--}}
+                                                            {{--@endforeach--}}
+                                                        {{--</div>--}}
+                                                    {{--@else--}}
+                                                        {{--<a class="ajax-nav" href="">--}}
+                                                            {{--{{ $child->name }}--}}
+                                                        {{--</a>--}}
+                                                    {{--@endif--}}
+                                                {{--@endforeach--}}
+                                            {{--@endif--}}
+                                        {{--</div>--}}
+                                    {{--</div>--}}
                                 @endforeach
                             </div>
                         @else
 
                             @foreach(($result->groups ?? $result->units) as $group)
-                            {{--@dd($group)--}}
+                                {{--@dd($group)--}}
                                 @php
                                     $url = (!$grp ? ('./' . $result->breadcrumbs[4]->url . '/' . ($group->id ?? $group->short_name)) : ( isset($group->hasSubgroups) && !$group->hasSubgroups ? ( ('./' . $group->parentId . '/' . $group->id) ) : './' . $group->id)) . ($request['criteria'] ? ('?criteria='.urlencode($request['criteria'])) : '') . '?active_tab=catalogue';
 

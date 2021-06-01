@@ -1,3 +1,4 @@
+
 <html xmlns:v="urn:schemas-microsoft-com:vml"
       xmlns:o="urn:schemas-microsoft-com:office:office"
       xmlns:x="urn:schemas-microsoft-com:office:excel"
@@ -216,7 +217,7 @@ none;width:18pt'>код</td>
         <td colspan=6 class=xl93 width=72 style='border-left:none;width:54pt'>11</td>
     </tr>
     @foreach($data['products'] as $product_id => $product)
-        @continue(!isset($product['id']))
+        @continue(!isset($product['article']))
         <tr height=16 style='mso-height-source:userset;height:12.0pt'>
             <td colspan=2 height=16 class=xl93 width=24 style='height:12.0pt;width:18pt'>{{ ($loop->index + 1) }}</td>
             <td colspan=6 class=xl94 width=72 style='border-left:none;width:54pt'>---</td>

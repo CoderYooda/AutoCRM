@@ -7,8 +7,10 @@ use App\Models\iCat\CatMark;
 use App\Models\iCat\CatModel;
 use App\Models\iCat\CatModify;
 use App\Models\iCat\CatType;
+use App\Models\iCat\Favourite;
 use Illuminate\Http\Request;
 use App\Http\Controllers\HelpController as HC;
+use Auth;
 
 class CatalogueController extends Controller
 {
@@ -50,6 +52,8 @@ class CatalogueController extends Controller
             $types = CatType::with('marks')->get();
         }
 
+
+
         $content = view(get_template() . '.catalogue.marks', compact('types', 'request'));
         $target = HC::selectTarget();
 
@@ -69,23 +73,33 @@ class CatalogueController extends Controller
 //        return $types;
     }
 
+    static function getFavourites()
+    {
+        $favs = Favourite::where('company_id', Auth::user()->company_id)->get();
+        return $favs;
+    }
+
+    public function addToFavorite(Request $request)
+    {
+        $fav = Favourite::firstOrNew([
+            'company_id' => \Auth::user()->company_id,
+            'name' => $request['name'],
+            'search' => $request['search'],
+            'link' => $request['link'],
+            'img_link' => $request['img_link'],
+        ]);
+        $fav->save();
+        return response()->json(['status' => 'success']);
+    }
+
     public function getByVin(Request $request)
     {
         $href = '/search2' . '?text=' . $request['text'];
         $acat = new ACat('ac0312e3c94b0fc48d6c01fea6828bee');
         $result = $acat->getModels($href);
-
-        $content = view(get_template() . '.catalogue.vinresult', compact('result', 'request'));
-        $target = HC::selectTarget();
-        if ($request['view_as'] != null && $request['view_as'] == 'json') {
-            return response()->json([
-                'target' => $target,
-                'page' => 'Модели',
-                'html' => $content->render()
-            ]);
-        } else {
-            return $content;
-        }
+        return response()->json([
+            'html' => view(get_template() . '.catalogue.vinresult', compact('result', 'request'))->render()
+        ]);
     }
 
     public function getModels(Request $request, $type, $mark)
