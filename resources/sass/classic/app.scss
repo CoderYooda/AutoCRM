@@ -56,6 +56,51 @@
 .swal2-styled {
     padding: 0 15px!important;
 }
+.cat_item{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    width: 150px;
+    height: 160px;
+    padding: 15px;
+    float: left;
+    margin: 10px;
+    cursor: pointer;
+    color: #4F4F4F;
+    border-radius: 5px;
+    font-weight: 500;
+    a{
+        width: 100%;
+        display: flex;
+    }
+    .bookmark{
+        position: absolute;
+        height: 18px;
+        width: 18px;
+        right: 15px;
+        top: 15px;
+        background: url(/images/bookmark.svg) center no-repeat;
+        &:hover{
+            background: url(/images/bookmark_on.svg) center no-repeat;
+        }
+    }
+    span{
+        height: auto;
+        margin: auto;
+    }
+    &:hover{
+        transition: all 0.4s;
+        box-shadow: 0 0 0 3px #0289ce;
+    }
+    img{
+        display: block;
+        margin: 0 auto;
+        width: 50px;
+        height: 50px;
+        margin-bottom: 20px;
+        object-fit: cover;
+    }
+}
 .catalogue{
     h2{
         margin-bottom: 30px;
@@ -64,30 +109,9 @@
     .cat_item_container{
         overflow: hidden;
         margin-bottom: 20px;
+
     }
-    .cat_item{
-        display: inline-block;
-        text-align: center;
-        width: 100px;
-        height: 150px;
-        padding: 15px;
-        float: left;
-        margin: 10px;
-        cursor: pointer;
-        word-break: break-word;
-        &:hover{
-            transition: all 0.4s;
-            box-shadow: 0 1px 4px 0 #5a6fab, 0 0 2px 1px #ffffff;
-        }
-        img{
-            display: block;
-            margin: 0 auto;
-            width: 50px;
-            height: 50px;
-            margin-bottom: 20px;
-            object-fit: cover;
-        }
-    }
+
     .model_item{
         display: inline-block;
         text-align: center;
@@ -99,9 +123,11 @@
         cursor: pointer;
         font-weight: bold;
         font-size: 16px;
+        color: #4F4F4F;
+        border-radius: 5px;
         &:hover{
             transition: all 0.4s;
-            box-shadow: 0 1px 4px 0 #5a6fab, 0 0 2px 1px #ffffff;
+            box-shadow: 0 0 0 3px #0289ce;
         }
         img{
             object-fit: contain;

@@ -1,7 +1,11 @@
+.imageArea{
+    height: 500px;
+    position: relative;
+}
 .imageLayout{
     width: fit-content;
-    position: relative;
     margin: 0 auto;
+    position: absolute;
     .ladel{
         background: #2d76a8;
         border-radius: 3px;
@@ -21,11 +25,144 @@
     padding: 10px 25px;
     box-shadow: 0px 5px 4px 0px #0000002b;
     z-index: 1000;
+    display: flex;
+}
+.has_dd{
+    position: relative;
+}
+.vin_searcher{
+    display: flex;
+    position: relative;
+    .drop_content{
+        padding: 15px;
+    }
+}
+.favour-block {
+    display: flex;
+    margin-left: 15px;
+    padding: 0 10px;
+    line-height: 30px;
+    font-weight: 500;
+    color: #bdbdbd;
+    position: relative;
+    cursor: pointer;
+    .red_count{
+        background: #FDA61C;
+        position: absolute;
+        right: 8px;
+        top: -2px;
+        padding: 3px 6px;
+        line-height: 12px;
+        border-radius: 10px;
+        font-size: 11px;
+        color: #fff;
+        text-align: center;
+    }
+    .favour-ico{
+        height: 30px;
+        width: 30px;
+        background: url(/images/bookmark.svg) center no-repeat;
+    }
+    &.active{
+        color: #009AE8;
+        .favour-ico{
+            background: url(/images/bookmark_on.svg) center no-repeat;
+        }
+    }
+}
+.breadcrumbs{
+    padding: 10px 25px 0px 25px;
+}
+.level{
+    width: 100%;
+}
+.withDrops{
+    .dropdown{
+        a{
+            display: block;
+            padding: 0px 10px;
+            &:hover{
+                text-decoration: underline;
+            }
+        }
+    }
+    .level{
+        .push{
+            display: block;
+            padding: 5px 10px;
+        }
+        &>.dropdown{
+            margin-left: 15px;
+            height: auto;
+            padding-bottom: 5px;
+        }
+    }
+    .lbox{
+        display: block;
+        width: 100%;
+        background: #fff;
+        border-radius: 4px;
+        margin-bottom: 5px;
+        cursor: pointer;
+    }
+}
+.drop_content{
+    position: absolute;
+    top: 40px;
+    min-width: 100%;
+    max-width: 800px;
+    max-height: 360px;
+    overflow: auto;
+    left: 0;
+    background: #fff;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 0px 0px 4px 4px;
+    ol{
+        padding: 0;
+        list-style: none;
+        margin: 0;
+        li.search{
+            padding: 0 15px;
+            border-top: 1px solid #E0E0E0;
+        }
+        li{
+            //padding: 0 15px;
+            //border-top: 1px solid #E0E0E0;
+            display: flex;
+            div:first-child {
+                border-bottom: 1px solid #eee;
+                padding-left: 0!important;
+                & > span{
+                    color: #BDBDBD;
+                    background: #fff;
+                    display: block;
+                    width: fit-content;
+                    padding-right: 10px;
+                    margin-bottom: -1px;
+                }
+            }
+            div{
+                padding-left: 10px;
+            }
+            &:first-child{
+                border-top: none;
+            }
+            a{
+                line-height: 40px;
+                display: block;
+            }
+        }
+    }
+}
+.left_shift{
+    margin-left: auto;
 }
 .catalogue {
+    margin: 0!important;
     .pbox{
         padding: 15px;
     }
+
     select{
         color: #656565;
         padding: 0px 8px;
@@ -37,13 +174,24 @@
         outline: 0;
         border-spacing: 0;
         user-select: text;
+        tr:last-child{
+            td{
+                border-bottom: none;
+            }
+        }
         td{
             border-right: 1px solid #e7e8ec;
             border-bottom: 1px solid #e7e8ec;
         }
-        tr, td{
+        th{
+            border-bottom: 1px solid #e7e8ec;
+        }
+        tr, td, th{
             padding: 4px 16px;
         }
+    }
+    .bricks{
+        padding: 5px 15px;
     }
     .cat-row{
         padding: 10px;
@@ -57,6 +205,26 @@
     }
     .pbox > * {
         margin-bottom: 10px;
+    }
+    .cat-tabs-cont{
+        display: flex;
+        flex-wrap: wrap;
+        background: #E2E3E8;
+        padding: 10px 17px;
+        a{
+            background: #fff;
+            padding: 4px 10px;
+            margin: 5px 8px;
+            white-space: nowrap;
+            display: block;
+            border-radius: 6px;
+            color: #4F4F4F;
+            cursor: pointer;
+            &.active{
+                background: #0289CE;
+                color: #fff;
+            }
+        }
     }
     .breadcrumbs{
         a{
@@ -73,5 +241,8 @@
                 right: -15px;
             }
         }
+    }
+    .active{
+        display: block!important;
     }
 }

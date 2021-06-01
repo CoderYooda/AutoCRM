@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\iCat\Favourite;
 use App\Models\System\StockOfProduct;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -29,6 +30,10 @@ class Company extends Model
     public function stocks()
     {
         return $this->hasMany(StockOfProduct::class, 'company_id', 'id');
+    }
+    public function favorites()
+    {
+        return $this->hasMany(Favourite::class, 'company_id', 'id');
     }
 
     public function getPayedDays()
