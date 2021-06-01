@@ -100,6 +100,7 @@ class DocumentController extends Controller
         //Компания
         $data['company_name'] = $company->official_name;
         $data['legal_address'] = $company->legal_address;
+        $data['actual_address'] = $company->actual_address;
         $data['inn'] = $company->inn;
         $data['kpp'] = $company->kpp;
         $data['is_company'] = $company->is_company;
@@ -198,11 +199,11 @@ class DocumentController extends Controller
                 $data['products'][$key]['count'] = $product->count;
 
                 $data['products'][$key]['price_with_nds'] = $product->price;
-                $data['products'][$key]['price_without_nds'] = $product->price - ($product->price / 100 * 20);
-                $data['products'][$key]['nds'] = ($product->price / 100 * 20);
+                $data['products'][$key]['price_without_nds'] = $product->price - 0;//($product->price / 100 * 20);
+                $data['products'][$key]['nds'] = 0;//($product->price / 100 * 20);
 
                 $total_price = ($product->price * $product->count);
-                $nds = ($total_price / 100 * 20);
+                $nds = 0;//($total_price / 100 * 20);
 
                 $data['products']['price_without_nds'] += $total_price - $nds;
                 $data['products']['price_with_nds'] += $total_price;
