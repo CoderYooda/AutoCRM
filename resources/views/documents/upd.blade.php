@@ -216,10 +216,12 @@ none;width:18pt'>код</td>
         <td colspan=7 class=xl93 width=84 style='border-left:none;width:63pt'>10а</td>
         <td colspan=6 class=xl93 width=72 style='border-left:none;width:54pt'>11</td>
     </tr>
+    @php($counter = 0)
     @foreach($data['products'] as $product_id => $product)
         @continue(!isset($product['article']))
+        @php($counter++)
         <tr height=16 style='mso-height-source:userset;height:12.0pt'>
-            <td colspan=2 height=16 class=xl93 width=24 style='height:12.0pt;width:18pt'>{{ ($loop->index + 1) }}</td>
+            <td colspan=2 height=16 class=xl93 width=24 style='height:12.0pt;width:18pt'>{{ $counter }}</td>
             <td colspan=6 class=xl94 width=72 style='border-left:none;width:54pt'>---</td>
             <td colspan=12 class=xl96 width=144 style='width:108pt'>{{ $product['name'] }}</td>
             <td colspan=3 class=xl93 width=36 style='width:27pt'>---</td>
@@ -479,16 +481,16 @@ none;width:18pt'>код</td>
             @if($data['is_company'])
                 {{ $data['company_name'] }}, ИНН {{ $data['inn'] ?? '________' }}, КПП {{ $data['kpp'] ?? '________' }}
             @else
-                {{ $data['company_name'] ?? '' }}
+                {{ $data['company_name'] ?? '' }}, ИНН {{ $data['inn'] ?? '________' }}
             @endif
         </td>
         <td colspan=3 class=xl76>[14]</td>
         <td class=xl66 style='border-left:none'>&nbsp;</td>
         <td colspan=39 class=xl75>
             @if($data['partner_type'] == 2)
-                {{ $data['company_name'] }}, ИНН {{ $data['inn'] ?? '________' }}, КПП {{ $data['kpp'] ?? '________' }}
+                {{ $data['company_name'] }}, ИНН {{ $data['inn'] ?? '------' }}, КПП {{ $data['kpp'] ?? '-------' }}
             @elseif($data['partner_type'] == 1)
-                {{ $data['partner_fio'] ?? '' }}
+                {{ $data['partner_fio'] ?? '' }}, ИНН {{ $data['inn'] ?? '------' }},
             @else
                 Частное лицо
             @endif
