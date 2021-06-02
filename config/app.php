@@ -3,6 +3,7 @@
 use App\Providers\AppProviderStoreService;
 use App\Providers\AppServiceProvider;
 
+use App\Providers\BaseServiceProvider;
 use App\Providers\Shop\ShopServiceProvider;
 use App\Providers\Shop\CartServiceProvider;
 use App\Providers\Shop\FavoriteServiceProvider;
@@ -60,7 +61,6 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-
         /*
          * Package Service Providers...
          */
@@ -68,7 +68,6 @@ return [
         sngrl\SphinxSearch\SphinxSearchServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
-
         /*
          * Application Service Providers...
          */
@@ -82,6 +81,7 @@ return [
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
 
         //CRM
+        BaseServiceProvider::class,
         AppProviderStoreService::class,
         AppServiceProvider::class,
 

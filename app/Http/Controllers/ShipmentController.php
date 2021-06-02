@@ -7,6 +7,7 @@ use App\Http\Requests\ShipmentsRequest;
 use App\Models\ClientOrder;
 use App\Models\Entrance;
 use App\Models\Shipment;
+use App\Repositories\Shipment\ShipmentRepositoryContract;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -17,6 +18,15 @@ use App\Http\Controllers\UserActionsController as UA;
 
 class ShipmentController extends Controller
 {
+    protected $shipment;
+
+    public function __construct(
+        ShipmentRepositoryContract $shipment
+    )
+    {
+        $this->shipment = $shipment;
+    }
+
     public static function shipmentDialog(Request $request)
     {
         $clientorder = null;
