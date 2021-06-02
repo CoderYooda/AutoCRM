@@ -298,7 +298,7 @@ none;width:18pt'>код</td>
         <td colspan=15 class=xl83 width=180 style='width:135pt'>{{ !$data['is_company'] ? $data['company_name'] : '---' }}</td>
         {{--        <td colspan=15 class=xl83 width=180 style='width:135pt'>{{ !$company->is_company ? $company->name : '---' }}</td>--}}
         <td colspan=3 class=xl81 width=36 style='width:27pt'></td>
-        <td colspan=35 class=xl83 width=420 style='width:315pt'>&nbsp;</td>
+        <td colspan=35 class=xl83 width=420 style='width:315pt'>@if($data['is_company']) ОГРН @else ОГРНИП @endif {{ $data['ogrn'] }}</td>
     </tr>
     <tr height=15 style='mso-height-source:userset;height:11.25pt'>
         <td colspan=8 height=15 class=xl80 style='height:11.25pt'>&nbsp;</td>
@@ -488,7 +488,7 @@ none;width:18pt'>код</td>
         <td class=xl66 style='border-left:none'>&nbsp;</td>
         <td colspan=39 class=xl75>
             @if($data['partner_type'] == 2)
-                {{ $data['company_name'] }}, ИНН {{ $data['inn'] ?? '------' }}, КПП {{ $data['kpp'] ?? '-------' }}
+                {{ $data['partner_name'] }}, ИНН {{ $data['partner_inn'] ?? '------' }}, КПП {{ $data['partner_kpp'] ?? '-------' }}
             @elseif($data['partner_type'] == 1)
                 {{ $data['partner_fio'] ?? '' }}, ИНН {{ $data['inn'] ?? '------' }},
             @else
