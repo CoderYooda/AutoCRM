@@ -178,8 +178,6 @@ class DocumentController extends Controller
 
             $data['manager_name'] = Auth::user()->partner->official_name;
 
-
-
             //Партнёр
             $data['partner_name'] = $shipment->partner->official_name;
             $data['partner_address'] =  $shipment->partner->type != 2 ? $shipment->partner->address : $shipment->partner->ur_address;
