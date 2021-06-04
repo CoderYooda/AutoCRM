@@ -110,7 +110,7 @@ class PageController extends Controller
         $products = Product::with('company', 'supplier', 'entrances', 'image')
             ->whereIn('category_id', $categories->pluck('id'))
             ->paginate(15);
-        
+
         $articleEntrances = DB::table('article_entrance')
             ->whereIn('product_id', $products->pluck('id'))
             ->when(!$this->shop->show_empty, function ($query) {
