@@ -370,13 +370,12 @@ class StoreController extends Controller
                         'article' => $row[2],
                         'categories' => explode(',', $row[3] ?? []),
                         'warehouse' => explode(',', $row[4] ?? []),
-                        'count' => $row[5] ?? 0,
-                        'price' => $row[6] ?? 0.0,
+                        'count' => intval($row[5]) ?? 0,
+                        'price' => floatval(str_replace(",", ".", $row[6])) ?? 0.0,
                         'barcode_manufacturer' => $row[7] ?? '',
                         'barcode_warehouse' => $row[8] ?? ''
                     ];
                 }
-
                 fclose($handle);
             }
         }

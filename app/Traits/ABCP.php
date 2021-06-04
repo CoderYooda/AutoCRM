@@ -347,7 +347,7 @@ trait ABCP
         $cart->clearByProviderKey($this->service_key);
 
         //--------- Создание заявки поставщику на складе
-
+        dd(1);
         $this->createProviderOrder($data);
 
         return true;
