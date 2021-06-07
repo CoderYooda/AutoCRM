@@ -84,6 +84,7 @@ class StoreController extends Controller
         $ids = explode(',', $import->list);
 
         Product::whereIn('id', $ids)->delete();
+
         DB::table('article_store')->whereIn('product_id', $ids)->delete();
 
         $import->delete();

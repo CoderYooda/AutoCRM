@@ -276,6 +276,7 @@
                                 </a>
                             </li>
                         </ul>
+                        <div class="version">{{ memory_get_usage (true) / 1024 / 1024 }} MB</div>
                         <div class="version">version <br>{{ env('VERSION', '0.0.0') }} - {{ Auth::user()->current_store }}</div>
                     </div>
                 </div>
