@@ -89,7 +89,8 @@ class CatalogueController extends Controller
             'img_link' => $request['img_link'],
         ]);
         $fav->save();
-        return response()->json(['status' => 'success']);
+        $favourites = self::getFavourites();
+        return response()->json(['status' => 'success', 'favourites' => $favourites]);
     }
 
     public function getByVin(Request $request)
@@ -114,6 +115,7 @@ class CatalogueController extends Controller
             $acat = new ACat('ac0312e3c94b0fc48d6c01fea6828bee');
 
             $result = $acat->getModels($href);
+
 //            dd($result);
 //            foreach($result->models as $model) {
 //                $m = CatModel::create([
