@@ -29,8 +29,9 @@ class Handler extends ExceptionHandler
         if($user && $user !== null){
             $exc->company_id = $user->company_id;
             $exc->user_id = $user->id;
+            $exc->save();
         }
-        $exc->save();
+
 
         parent::report($exception);
 
