@@ -21,7 +21,7 @@
                 <td>{{ $position->product }}</td>
                 <td>{{ correct_price($position->price) }} руб.</td>
                 <td>{{ $position->count }} шт.</td>
-                <td>{{ $position->source }}</td>
+                <td>Склад</td>
             </tr>
         @endforeach
     </tbody>
