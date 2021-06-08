@@ -28,7 +28,7 @@
                     <div class="input-group">
                         <label style="width: 100px;">Самовывоз</label>
                         <label data-error="has_pickup" class="custom_checkbox">
-                            <input type="checkbox" class="not_default" name="has_pickup" @if($shop->has_pickup) checked @endif value="1" />
+                            <input type="checkbox" class="not_default" name="has_pickup" @if(isset($shop->has_pickup) && $shop->has_pickup) checked @endif value="1" />
                             <span></span>
                         </label>
                     </div>

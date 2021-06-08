@@ -71,6 +71,7 @@ class OrderController extends Controller
                 if($response->status == 'succeeded') {
                     $order->update(['status' => 2]);
 
+
                     Mail::to($order->email)->send(new PayedOrder($order));
                 }
                 else if($response->status == 'canceled') {
