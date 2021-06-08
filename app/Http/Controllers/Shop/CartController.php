@@ -196,11 +196,11 @@ class CartController extends Controller
             }
 
 
-//            $orderEmails = $this->shop->orderEmails->pluck('email');
-//
-//            Mail::to($orderEmails)->send(new NewOrderEmail($order));
-//
-//            Mail::to($partner->email)->send(new ModerateOrder($order));
+            $orderEmails = $this->shop->orderEmails->pluck('email');
+
+            Mail::to($orderEmails)->send(new NewOrderEmail($order));
+
+            Mail::to($partner->email)->send(new ModerateOrder($order));
 
 
             $cart->clear();
