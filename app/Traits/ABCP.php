@@ -313,11 +313,11 @@ trait ABCP
             $orderInfo = json_decode($order->data);
 
             $orders[] = [
-                'number'       => $orderInfo->number,
-                'brand'        => $orderInfo->brand,
-                'supplierCode' => $orderInfo->supplierCode,
-                'itemKey'      => $orderInfo->itemKey,
-                'quantity'     => $order->count
+                'number'       => $orderInfo->number ?? $orderInfo->model->number,
+                'brand'        => $orderInfo->brand ?? $orderInfo->model->brand,
+                'supplierCode' => $orderInfo->supplierCode ?? $orderInfo->model->supplierCode,
+                'itemKey'      => $orderInfo->itemKey ?? $orderInfo->model->itemKey,
+                'quantity'     => $order->count ?? $orderInfo->model->count
             ];
         }
 
