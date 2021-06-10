@@ -55,7 +55,7 @@
                             <div class="desc">{{ $position->name }}</div>
                             <div class="desc">{{ $position->product }}</div>
                             <div class="desc">{{ $position->manufacturer }}</div>
-                            <div class="desc">{{ $position->source }}</div>
+                            <div class="desc">Склад</div>
                             <div class="desc count">{{ $position->count }}</div>
                             <div class="desc">{{ correct_price($position->price) }} ₽</div>
                             <div class="desc">{{ correct_price($position->price * $position->count) }} ₽</div>
