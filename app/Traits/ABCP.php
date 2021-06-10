@@ -331,23 +331,22 @@ trait ABCP
             'comment'         => $data['comment']
         ];
 
-//        $response = $this->query('orders/instant', $params, 'POST');
-//
-//        foreach ($response['orders'] as $order_id => $orderInfo) {
-//            CartProviderOrder::create([
-//                'company_id' => $this->user->company_id,
-//                'user_id' => $this->user->id,
-//                'service_key' => $this->service_key,
-//                'number' => $order_id
-//            ]);
-//        }
+        $response = $this->query('orders/instant', $params, 'POST');
+
+        foreach ($response['orders'] as $order_id => $orderInfo) {
+            CartProviderOrder::create([
+                'company_id' => $this->user->company_id,
+                'user_id' => $this->user->id,
+                'service_key' => $this->service_key,
+                'number' => $order_id
+            ]);
+        }
 
         /** @var CartInterface $cart */
         $cart = app(CartInterface::class);
         $cart->clearByProviderKey($this->service_key);
 
         //--------- Создание заявки поставщику на складе
-        dd(1);
         $this->createProviderOrder($data);
 
         return true;
