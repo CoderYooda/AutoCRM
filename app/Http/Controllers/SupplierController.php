@@ -61,12 +61,16 @@ class SupplierController extends Controller
         $supplier_name = str_replace(' ', '', $supplier_name); //Удаляем пробелы
 
         $manufacturer = VehicleMark::where('name', $supplier_name)->first();
-
-        self::$supplier = Supplier::updateOrCreate(['name' => $supplier_name], [
-            'name' => $supplier_name,
-            'company_id' => Auth::user()->company_id
-        ]);
-
+        $s = Supplier::where(['name' => $supplier_name])->first();
+        if($s !== null){
+            self::$supplier = $s;
+        } else {
+            self::$supplier = Supplier::create([
+                'name' => $supplier_name,
+                'company_id' => Auth::user()->company_id
+            ]);
+        }
+        
         event(new ModelWasStored(Auth::user()->company_id, 'SupplierStored'));
 
         return response()->json([
