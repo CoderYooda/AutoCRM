@@ -70,7 +70,7 @@ class SupplierController extends Controller
                 'company_id' => Auth::user()->company_id
             ]);
         }
-        
+
         event(new ModelWasStored(Auth::user()->company_id, 'SupplierStored'));
 
         return response()->json([

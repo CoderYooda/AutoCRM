@@ -40,7 +40,7 @@
                             <div class="w-20">{{ $position->name }}</div>
                             <div class="w-15">{{ $position->article }}</div>
                             <div class="w-15">{{ $position->manufacturer }}</div>
-                            <div class="w-10">{{ $position->source }}</div>
+                            <div class="w-10">Склад</div>
                             <div class="w-10">{{ $position->count }}</div>
                             <div class="w-10">{{ correct_price($position->price) }} ₽</div>
                             <div class="w-10">{{ correct_price($position->count * $position->price) }} ₽</div>
