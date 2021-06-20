@@ -37,7 +37,15 @@ class ProductController extends Controller
 
             foreach ($providers->activated() as $provider_key => $provider) {
 
-                $providersOrders[$provider_key] = $provider->getStoresByArticleAndBrand($product->article, $product->supplier->name);
+                try {
+                    $providersOrders[$provider_key] = $provider->getStoresByArticleAndBrand($product->article, $product->supplier->name);
+                }
+                catch (\Exception $exception) {
+                    $providersOrders[$provider_key] = [
+                        'originals' => [],
+                        'analogues' => [],
+                    ];
+                }
 
                 foreach (['originals', 'analogues'] as $type) {
 

@@ -112,28 +112,30 @@ class FavoritParts implements ProviderInterface
 
         $items = [];
 
-        foreach ($unfilteredItems['analogues'] as $item) {
-            foreach ($item['warehouses'] as $offer) {
+        if(isset($unfilteredItems['analogues'])) {
+            foreach ($unfilteredItems['analogues'] as $item) {
+                foreach ($item['warehouses'] as $offer) {
 
-                $items[] = [
-                    'goodsID' => $item['goodsID'],
-                    'brand' => $item['brand'],
-                    'count' => $offer['stock'],
-                    'name' => $item['name'],
-                    'number' => $item['number'],
-                    'price' => $offer['price'],
-                    'shipmentDate' => $offer['shipmentDate'],
-                    'rate' => $item['rate'],
-                    'warehouse_name' => $offer['code'],
-                    'warehouse_id' => $offer['id'],
-                    'own' => $offer['own'],
-                    'warehouseShipping' => $offer['warehouseShipping'],
-                    'supplier' => $this->name
-                ];
+                    $items[] = [
+                        'goodsID'           => $item['goodsID'],
+                        'brand'             => $item['brand'],
+                        'count'             => $offer['stock'],
+                        'name'              => $item['name'],
+                        'number'            => $item['number'],
+                        'price'             => $offer['price'],
+                        'shipmentDate'      => $offer['shipmentDate'],
+                        'rate'              => $item['rate'],
+                        'warehouse_name'    => $offer['code'],
+                        'warehouse_id'      => $offer['id'],
+                        'own'               => $offer['own'],
+                        'warehouseShipping' => $offer['warehouseShipping'],
+                        'supplier'          => $this->name
+                    ];
+                }
             }
-        }
 
-        unset($unfilteredItems['analogues']);
+            unset($unfilteredItems['analogues']);
+        }
 
         foreach ($unfilteredItems['warehouses'] as $offer) {
             $items[] = [
@@ -152,7 +154,6 @@ class FavoritParts implements ProviderInterface
                 'supplier' => $this->name
             ];
         }
-
 
         $results = [
             'originals' => [],

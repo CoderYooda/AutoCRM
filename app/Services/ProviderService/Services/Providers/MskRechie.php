@@ -96,7 +96,6 @@ class MskRechie implements ProviderInterface
             'analogues' => []
         ];
 
-
         if ($items == []) return $results;
 
         $originalIndex = 0;
@@ -160,7 +159,6 @@ class MskRechie implements ProviderInterface
         $params['p'] = $this->api_key;
         $params['cs'] = 'utf8';
 
-
         $url .= '?' . http_build_query($params);
         try {
             $result = file_get_contents($url);
@@ -185,7 +183,6 @@ class MskRechie implements ProviderInterface
         if(empty($response['result'])) {
             throw new \Exception('Not found', 404);
         }
-
     }
 
     public function getSelectFieldValues(string $field_name): array
