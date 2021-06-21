@@ -195,8 +195,7 @@ trait ABCP
             $errorMessage = $response->getMessage();
 
             foreach ($this->errors as $code => $info) {
-                if (strpos($errorMessage, $info['search']) === false) continue;
-                throw new \Exception($info['return'], $code);
+                abort_if(strpos($errorMessage, $info['search']) !== false, $code, $info['return']);
             }
         }
     }
@@ -281,7 +280,8 @@ trait ABCP
 
         $results = [];
 
-        foreach ($response as $date) {
+        foreach ($response as $index => $date) {
+            if(!$index) continue;
             $results[$date['date']] = $date['name'];
         }
 
@@ -334,7 +334,7 @@ trait ABCP
         $response = $this->query('orders/instant', $params, 'POST');
 
         foreach ($response['orders'] as $order_id => $orderInfo) {
-            CartProviderOrder::create([
+            CartProviderOrder::query()->create([
                 'company_id' => $this->user->company_id,
                 'user_id' => $this->user->id,
                 'service_key' => $this->service_key,

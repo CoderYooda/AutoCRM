@@ -20,7 +20,7 @@ trait CartProviderOrderCreator
 
         $supplierController = new SupplierController();
         $supplierRequest = new SupplierRequest();
-        $currentStore = Store::find(Auth::user()->current_store);
+        $currentStore = Store::query()->find(Auth::user()->current_store);
 
         $totalPrice = 0;
         $totalCount = 0;
