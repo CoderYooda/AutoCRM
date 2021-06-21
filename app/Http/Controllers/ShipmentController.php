@@ -116,7 +116,6 @@ class ShipmentController extends Controller
             ->limit(30)
             ->get();
 
-
         foreach($shipments as $shipment){
             $shipment->load('products');
         }
