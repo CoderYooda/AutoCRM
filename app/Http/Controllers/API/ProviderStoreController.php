@@ -322,6 +322,8 @@ class ProviderStoreController extends Controller
     {
         /** @var ProviderInterface[] $providers */
         $providers = app(Providers::class)->activated();
+
+        /** @var CartInterface $cart */
         $cart = app(CartInterface::class);
 
         PermissionController::canByPregMatch('Создавать заявки поставщикам через корзину');

@@ -234,11 +234,10 @@ class ArmTek implements ProviderInterface
             $orderInfo = json_decode($order->data, true);
 
             $orders[] = [
-                'PIN'    => $orderInfo['PIN'],
-                'BRAND'  => $orderInfo['BRAND'],
+                'PIN'    => $orderInfo['model']['PIN'],
+                'BRAND'  => $orderInfo['model']['BRAND'],
                 'KWMENG' => $order->count,
-//                'KEYZAK' => $orderInfo['KEYZAK'],
-//                'DBTYP' => 3,
+                'KEYZAK' => $orderInfo['model']['KEYZAK'],
             ];
         }
 
@@ -247,7 +246,8 @@ class ArmTek implements ProviderInterface
             'KUNRG'     => $this->getApiKunnr(),
             'INCOTERMS' => $data['delivery_type_id'],
             'KUNZA'     => $data['delivery_type_id'] == 1 ? $data['pickup_address_id'] : ['delivery_address_id'],
-            'TEXT_ORD'  => $data['comment'],
+            'TEXT_ORD'  => $data['comment'] ?? '',
+            'DBTYP' => 3,
             'ITEMS'     => $orders
         ];
 
@@ -268,7 +268,7 @@ class ArmTek implements ProviderInterface
 
         $result = $this->query('/ws_user/getUserInfo', $params, 'POST');
 
-        $pickups = $result['RESP']['STRUCTURE']['RG_TAB'][0]['EXW_TAB'];
+        $pickups = $result['RESP']['STRUCTURE']['RG_TAB'][0]['EXW_TAB'] ?? [];
 
         $results = [];
 
@@ -289,7 +289,7 @@ class ArmTek implements ProviderInterface
 
         $result = $this->query('/ws_user/getUserInfo', $params, 'POST');
 
-        $addresses = $result['RESP']['STRUCTURE']['RG_TAB'][0]['ZA_TAB'];
+        $addresses = $result['RESP']['STRUCTURE']['RG_TAB'][0]['ZA_TAB'] ?? [];
 
         $results = [];
 

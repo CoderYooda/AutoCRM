@@ -3,6 +3,7 @@
 
 namespace App\Traits;
 
+use App\Models\User;
 use App\Http\Controllers\SupplierController;
 use App\Http\Requests\SupplierRequest;
 use App\Models\Product;
@@ -16,11 +17,11 @@ trait CartProviderOrderCreator
 {
     public function createProviderOrder(array $data)
     {
-        $products = [];
+        $user = Auth::user();
 
         $supplierController = new SupplierController();
         $supplierRequest = new SupplierRequest();
-        $currentStore = Store::query()->find(Auth::user()->current_store);
+        $currentStore = Store::query()->find($user->current_store);
 
         $totalPrice = 0;
         $totalCount = 0;
@@ -44,7 +45,7 @@ trait CartProviderOrderCreator
             $dataFields = [
                 'company_id' => $this->company->id,
                 'category_id' => 10,
-                'creator_id' => $this->user->id,
+                'creator_id' => $user->id,
                 'supplier_id' => $supplier->id,
                 'article' => $orderInfo['model']['hash_info']['article'],
                 'name' => $orderInfo['model']['hash_info']['desc'],
@@ -83,7 +84,7 @@ trait CartProviderOrderCreator
         $providerPartner = Partner::firstOrCreate([
             'company_id' => $this->company->id,
             'category_id' => 6,
-            'store_id' => $this->user->current_store,
+            'store_id' => $currentStore,
             'type' => 2,
             'comment' => 'Автоматически созданный контакт',
             'opf' => 'ООО',
@@ -92,9 +93,9 @@ trait CartProviderOrderCreator
 
         $providerOrder = ProviderOrder::create([
             'company_id' => $this->company->id,
-            'store_id' => $this->user->current_store,
+            'store_id' => $currentStore,
             'partner_id' => $providerPartner->id,
-            'manager_id' => $this->user->partner->id,
+            'manager_id' => $user->partner->id,
             'nds' => 1,
             'nds_included' => 1,
             'summ' => $totalPrice
