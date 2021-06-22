@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Services\ProviderService\Contract\CartInterface;
 use App\Services\ProviderService\Providers;
+use App\Services\ProviderService\Services\Providers\ShateM;
 use App\Services\ProviderService\Services\Cart\CartDatabase;
 use App\Services\ProviderService\Services\Providers\AutoEuro;
 use App\Services\ProviderService\Services\Providers\AutoPiter;
@@ -45,6 +46,7 @@ class AppProviderStoreService extends ServiceProvider
             Rossko::class,
             Partkom::class,
             ProfitLiga::class,
+            ShateM::class,
         ], [ ProviderInterface::class ]);
 
         $this->app->bind(Providers::class, function (Application $app) {

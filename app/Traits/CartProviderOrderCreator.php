@@ -60,7 +60,6 @@ trait CartProviderOrderCreator
 
                 $product->stores()->updateExistingPivot($currentStore->id,['retail_price' => $orderInfo['model']['hash_info']['price'] ]);
 
-
                 DB::table('article_entrance')->insert([
                     'product_id' => $product->id,
                     'entrance_id' => null,

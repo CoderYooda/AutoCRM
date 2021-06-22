@@ -169,8 +169,8 @@ class Berg implements ProviderInterface
 
             $results[$listName][] = [
                 'index' => $is_analogue ? $analogueIndex : $originalIndex,
-                'name' => $store['desc'],
-                'code' => $store['code'],
+                'name' => $store['Description'],
+                'code' => $store['OfferKey'],
                 'rest' => $store['rest'],
                 'days_min' => $store['days_min'],
                 'days_max' => $store['days_max'],

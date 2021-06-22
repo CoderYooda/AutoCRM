@@ -39,7 +39,6 @@ class Partkom implements ProviderInterface
         ]
     ];
 
-
     public function __construct()
     {
         /** @var ShopManager $shopManager */

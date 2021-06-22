@@ -3,7 +3,10 @@
 
 namespace App\Services\ProviderService\Services\Providers;
 
+use Carbon\Carbon;
+use GuzzleHttp\Client;
 use App\Models\Company;
+use Illuminate\Support\Facades\Cache;
 use App\Services\ProviderService\Contract\ProviderInterface;
 use App\Services\ShopManager\ShopManager;
 use App\Traits\CartProviderOrderCreator;
@@ -16,29 +19,23 @@ class ShateM implements ProviderInterface
 {
     use CartProviderOrderCreator;
 
-    protected $host = 'http://trinity-parts.ru/httpws/hs/';
+    protected $host = 'https://api.shate-m.ru/';
 
     protected $name = 'Шате-М';
     protected $service_key = 'shate-m';
-    protected $field_name = 'api_key';
 
     /** @var Company */
     protected $company = null;
 
-    protected $api_key = null;
+    protected $login;
+    protected $password;
+    protected $authKey;
 
     /** @var User $user */
     protected $user = null;
 
     protected $errors = [
-        401 => [
-            'search' => '500',
-            'return' => 'Not auth'
-        ],
-        404 => [
-            'search' => 0,
-            'return' => 'Not found'
-        ],
+
     ];
 
     public function __construct()
@@ -52,25 +49,24 @@ class ShateM implements ProviderInterface
 
         $this->company = $shop->company ?? $this->user->company;
 
-        $this->api_key = $this->company->getServiceFieldValue($this->service_key, $this->field_name);
+        $this->login = $this->company->getServiceFieldValue($this->service_key, 'login');
+        $this->password = $this->company->getServiceFieldValue($this->service_key, 'password');
+        $this->authKey = $this->company->getServiceFieldValue($this->service_key, 'api_key');
     }
 
     public function searchBrandsCount(string $article): array
     {
-        $params = [
-            'searchCode' => $article,
-            'online'     => true ? 'allow' : 'disallow'
-        ];
+        $url = "api/search/GetTradeMarksByArticleCode/{$article}";
 
-        $response = $this->query('search/byCode', $this->createParams($params), true);
+        $response = $this->query($url, 'GET');
 
         $results = [];
 
-        foreach ($response['data'] as $brand) {
+        foreach ($response['TradeMarkByArticleCodeModels'] as $brand) {
             $results[] = [
-                'brand' => $brand['producer'],
-                'article' => $brand['article'],
-                'desc' => strlen($brand['ident']) ? $brand['ident'] : 'Отсутствует'
+                'brand' => $brand['TradeMarkName'],
+                'article' => $article,
+                'desc' => $brand['PartName'],
             ];
         }
 
@@ -92,9 +88,27 @@ class ShateM implements ProviderInterface
         return (bool)$this->company->isServiceProviderActive($this->service_key);
     }
 
+    protected function filterItems($items)
+    {
+        $filtered = [];
+
+        foreach ($items as $key => $item) {
+
+            $warehouses = $item['ArticlePriceInfo'];
+
+            unset($item['ArticlePriceInfo']);
+
+            foreach ($warehouses as $warehouse) {
+                $filtered[] = array_merge($item, $warehouse);
+            }
+        }
+
+        return $filtered;
+    }
+
     public function getStoresByArticleAndBrand(string $article, string $brand): array
     {
-        $items = $this->searchItems($article, $brand, 'full', true);
+        $items = $this->searchItems($article, $brand);
 
         $results = [
             'originals' => [],
@@ -106,111 +120,98 @@ class ShateM implements ProviderInterface
         $originalIndex = 0;
         $analogueIndex = 0;
 
-        foreach ($items['data'] as $key => $item) {
+        $filtered = $this->filterItems($items);
 
-            $items['data'][$key]['index'] = $key;
+        foreach ($filtered as $key => $item) {
 
-            $items['data'][$key]['hash_info'] = [
-                'stock'        => $item['stock'],
-                'manufacturer' => $item['producer'],
-                'article'      => $item['code'],
-                'days'         => $item['deliverydays'],
-                'price'        => $item['price'],
-                'packing'      => $item['minOrderCount'],
-                'desc'         => $item['caption'],
-                'rest'         => $item['rest'],
-                'supplier'     => $this->name
+            $filtered[$key]['index'] = $key;
+
+            $filtered[$key]['hash_info'] = [
+                'stock'        => $item['LocationCode'],
+                'manufacturer' => $item['TradeMarkName'],
+                'article'      => $item['ArticleCode'],
+                'days'         => $item['DeliveryTerm'],
+                'price'        => $item['Price'],
+                'packing'      => $item['Multiplicity'] ?? 1,
+                'desc'         => $item['Description'],
+                'rest'         => (int)$item['Qty'],
+                'supplier'     => $this->name,
             ];
         }
 
-        foreach ($items['data'] as $key => $store) {
+        foreach ($filtered as $key => $store) {
 
-            if (!strlen($store['bid'])) continue;
+            $isAnalogue = $store['IsAnalog'];
 
-            $is_analogue = $store['producer'] != $brand;
-
-            $listName = $is_analogue ? 'analogues' : 'originals';
-
-            preg_match_all('/\d+/', $store['deliverydays'], $days);
-
-            $days_min = $days[0][0];
-            $days_max = $days[0][1] ?? 9999;
+            $listName = $isAnalogue ? 'analogues' : 'originals';
 
             $results[$listName][] = [
-                'index'        => $is_analogue ? $analogueIndex : $originalIndex,
-                'name'         => $store['caption'],
-                'code'         => $store['code'],
-                'rest'         => $store['rest'],
-                'days_min'     => $days_min,
-                'days_max'     => $days_max,
-                'packing'      => $store['minOrderCount'],
-                'min_count'    => $store['minOrderCount'],
-                'delivery'     => $store['deliverydays'] . ' дн.',
-                'price'        => $store['price'],
-                'manufacturer' => $store['producer'],
-                'article'      => $store['code'],
+                'index'        => $isAnalogue ? $analogueIndex : $originalIndex,
+                'name'         => $store['Description'],
+                'code'         => $store['OfferKey'],
+                'rest'         => (int)$store['Qty'],
+                'days_min'     => $store['DeliveryTerm'],
+                'days_max'     => $store['DeliveryTerm'],
+                'packing'      => $item['Multiplicity'] ?? 1,
+                'min_count'    => 1,
+                'delivery'     => $store['DeliveryTerm'] . ' дн.',
+                'price'        => $store['Price'],
+                'manufacturer' => $store['TradeMarkName'],
+                'article'      => $store['ArticleCode'],
                 'model'        => $store,
-                'stock'        => $store['stock'],
+                'stock'        => $store['LocationCode'],
                 'can_return'   => 'n/a',
-                'hash'         => md5($store['stock'] . $store['producer'] . $store['code'] . $store['deliverydays'] . $store['price'])
+                'hash'         => md5($store['LocationCode'] . $store['TradeMarkName'] . $store['ArticleCode'] . $store['DeliveryTerm'] . $store['Price']),
             ];
 
-            $is_analogue ? $analogueIndex++ : $originalIndex++;
+            $isAnalogue ? $analogueIndex++ : $originalIndex++;
         }
 
         return $results;
     }
 
-    public function searchItems($article, $brand, $searchType = 'full', $asArray = true)
+    public function searchItems($article, $brand)
     {
-        $article = strtoupper($article);
-        $brand = strtoupper($brand);
-        $searchParams = new stdClass();
-        $searchParams->$article = $brand;
+        $url = 'api/search/GetPricesByArticle';
+
         $params = [
-            'searchCode' => $searchParams,
-            'onlyStock'  => '0',
+            'ArticleCode' => $article,
+            'TradeMarkName' => $brand,
+//            'TradeMarkId' => ,
+            'IncludeAnalogs' => true,
         ];
 
-        switch ($searchType) {
-            case 'onlyStock':
-                $params['onlyStock'] = '1';
-                break;
-            case 'prices':
-                $params['online'] = 'disallow';
-                $params['analogs'] = [];
-                break;
-            case 'full':
-                $params['online'] = 'allow';
-                break;
-        }
+        $response = $this->query($url, 'GET', $params);
 
-        return $this->query('search/byCodeBrand', $this->createParams($params), $asArray);
+        return $response['PriceModels'];
     }
 
-    protected function createParams(array $params = [])
+    protected function query($url, $method, $params = [])
     {
-        $params['clientCode'] = $this->api_key;
-
-        return stream_context_create([
-            'http' => [
-                'header'  => "Content-Type:application/json\r\n\User-Agent:Trinity/1.0",
-                'method'  => "POST",
-                'content' => json_encode($params)
-            ]
-        ]);
-    }
-
-    protected function query($url, $context, $asArray = true)
-    {
-        $data = null;
+        $token = $this->getApiToken();
 
         try {
-            $url .= (strpos($url, 'cart/saveGoods') !== false ? '?v=2' : '');
-            $data = file_get_contents($this->host . $url, false, $context);
-            $data = json_decode($data, $asArray);
+
+            $fullUrl = $this->host . $url;
+
+            $client = new Client();
+
+            $options = [
+                'headers' => [
+                    'Token' => $token,
+                ]
+            ];
+
+            if($method == 'GET') $fullUrl .= '?' . http_build_query($params);
+
+            $response = $client->request($method, $fullUrl, $options);
+
+            $data = json_decode($response->getBody()->getContents(), true);
+
         } catch (Exception $exception) {
             $data = $exception;
+
+            dd($exception);
         }
 
         $this->errorHandler($data);
@@ -218,25 +219,58 @@ class ShateM implements ProviderInterface
         return $data;
     }
 
+    protected function getApiToken()
+    {
+        $cacheKey = 'api_' . $this->service_key . $this->company->id;
+
+        return Cache::remember($cacheKey, Carbon::now()->addMinutes(10), function () {
+            $client = new Client();
+
+            $headers = [
+                'Authorization' => 'Basic ' . base64_encode($this->login . ':' . $this->password),
+            ];
+
+            $params = [
+                'ApiKey' => $this->authKey,
+            ];
+
+            $options = [
+                'headers' => $headers,
+                'form_params' => $params,
+            ];
+
+            $url = $this->host . 'login';
+
+            try {
+                $response = $client->post($url, $options);
+            }
+            catch (Exception $exception) {
+                throw new Exception('wrong data', 403);
+            }
+
+            return last($response->getHeaders()['Token']);
+        });
+    }
+
     private function errorHandler($response) : void
     {
-        if (is_object($response)) {
-
-            $errorMessage = $response->getMessage();
-
-            foreach ($this->errors as $code => $info) {
-                if (strpos($errorMessage, $info['search']) === false) continue;
-                throw new \Exception($info['return'], $code);
-            }
-        } else {
-
-            $errorMessage = $response;
-
-            foreach ($this->errors as $code => $info) {
-                if ($errorMessage['count'] == $info['search'] && empty($errorMessage['data']))
-                throw new \Exception($info['return'], $code);
-            }
-        }
+//        if (is_object($response)) {
+//
+//            $errorMessage = $response->getMessage();
+//
+//            foreach ($this->errors as $code => $info) {
+//                if (strpos($errorMessage, $info['search']) === false) continue;
+//                throw new \Exception($info['return'], $code);
+//            }
+//        } else {
+//
+//            $errorMessage = $response;
+//
+//            foreach ($this->errors as $code => $info) {
+//                if ($errorMessage['count'] == $info['search'] && empty($errorMessage['data']))
+//                throw new \Exception($info['return'], $code);
+//            }
+//        }
     }
 
     public function getSelectFieldValues(string $field_name): array
@@ -247,8 +281,12 @@ class ShateM implements ProviderInterface
     public function checkConnect(array $fields): bool
     {
         if (!isset($fields['api_key'])) return false;
+        if (!isset($fields['login'])) return false;
+        if (!isset($fields['password'])) return false;
 
-        $this->api_key = $fields['api_key'];
+        $this->authKey = $fields['api_key'];
+        $this->login = $fields['login'];
+        $this->password = $fields['password'];
 
         //Если эксепшен не был выкинут, то пропускаем
         $this->searchBrandsCount('k1279');
@@ -258,45 +296,45 @@ class ShateM implements ProviderInterface
 
     public function sendOrder(array $data): bool
     {
-        $orders = [];
-
-        foreach ($data['orders'] as $product) {
-
-            $orderInfo = json_decode($product->data, true);
-
-            $orders[] = [
-                'internal_id'   => $product->id,
-                'bid'           => $orderInfo['model']['bid'],
-                'code'          => $orderInfo['model']['code'],
-                'producer'      => $orderInfo['model']['producer'],
-                'caption'       => $orderInfo['model']['caption'],
-                'supplier_id'   => $orderInfo['model']['supplier_id'],
-                'stock'         => $orderInfo['model']['stock'],
-                'price'         => $orderInfo['model']['price'],
-                'saled_price'   => $orderInfo['model']['price'] + sum_percent($orderInfo['model']['price'], 20),
-                'quantity'      => $product->count,
-                'source'        => $orderInfo['model']['source'],
-                'comment'       => $data['comment'] ?? '',
-                'deliverydays'  => $orderInfo['model']['deliverydays'],
-                'minOrderCount' => $orderInfo['model']['minOrderCount'],
-            ];
-        }
-
-        $params = [
-            'parts' => $orders
-        ];
-
-        $results = $this->query('cart/saveGoods', $this->createParams($params), true);
-
-        $idList = collect($results['data'])->collapse()->toArray();
-
-        $params = [
-            'IDs' => $idList
-        ];
-
-        $results = $this->query('cart/confirm', $this->createParams($params), true);
-
-        $this->createProviderOrder($data);
+//        $orders = [];
+//
+//        foreach ($data['orders'] as $product) {
+//
+//            $orderInfo = json_decode($product->data, true);
+//
+//            $orders[] = [
+//                'internal_id'   => $product->id,
+//                'bid'           => $orderInfo['model']['bid'],
+//                'code'          => $orderInfo['model']['code'],
+//                'producer'      => $orderInfo['model']['producer'],
+//                'caption'       => $orderInfo['model']['caption'],
+//                'supplier_id'   => $orderInfo['model']['supplier_id'],
+//                'stock'         => $orderInfo['model']['stock'],
+//                'price'         => $orderInfo['model']['price'],
+//                'saled_price'   => $orderInfo['model']['price'] + sum_percent($orderInfo['model']['price'], 20),
+//                'quantity'      => $product->count,
+//                'source'        => $orderInfo['model']['source'],
+//                'comment'       => $data['comment'] ?? '',
+//                'deliverydays'  => $orderInfo['model']['deliverydays'],
+//                'minOrderCount' => $orderInfo['model']['minOrderCount'],
+//            ];
+//        }
+//
+//        $params = [
+//            'parts' => $orders
+//        ];
+//
+//        $results = $this->query('cart/saveGoods', $this->createParams($params), true);
+//
+//        $idList = collect($results['data'])->collapse()->toArray();
+//
+//        $params = [
+//            'IDs' => $idList
+//        ];
+//
+//        $results = $this->query('cart/confirm', $this->createParams($params), true);
+//
+//        $this->createProviderOrder($data);
 
         return true;
     }
