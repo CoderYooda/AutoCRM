@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use App\Facades\NotifyServiceFacade as Notify;
 
 class ShopController extends Controller
 {
@@ -417,12 +418,14 @@ class ShopController extends Controller
                 if ($status == Order::PAYMENT_TYPE_ONLINE) {
                     $order->initPayment();
                 } else {
-                    $this->notify->sendMail($order, 'orderConfirmed', $order->email, 'Заказ подтвержден');
+                    Notify::sendMail($order, 'orderConfirmed', $order->email, 'Заказ подтвержден');
+//                    $this->notify->sendMail($order, 'orderConfirmed', $order->email, 'Заказ подтвержден');
                 }
 
                 $clientOrder->update(['status' => $status]);
             } else {
-                $this->notify->sendMail($order, 'orderCanceled', $order->email, 'Заказ отменен', 'order_canceled');
+                Notify::sendMail($order, 'orderCanceled', $order->email, 'Заказ отменен');
+//                $this->notify->sendMail($order, 'orderCanceled', $order->email, 'Заказ отменен', 'order_canceled');
 
             }
 
