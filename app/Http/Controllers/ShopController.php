@@ -32,14 +32,6 @@ class ShopController extends Controller
 {
 
 
-    public function __construct(
-        NotificationRepository $notify
-    )
-    {
-        $this->notify = $notify;
-    }
-
-
     public function index(Request $request)
     {
         // точка входа в страницу
