@@ -241,13 +241,12 @@ class ProviderStoreController extends Controller
             $orders[$order->provider_key][] = $order;
         }
 
-
         /** @var ProviderInterface $provider */
         foreach ($providers->activated() as $provider_key => $provider) {
 
             if (!in_array($provider_key, $ordersKeys)) continue;
 
-            $providerParams = $request->providers[$provider_key];
+            $providerParams = $request->providers[$provider_key] ?? [];
 
             $data = [
                 'orders' => $orders[$provider_key],
@@ -261,7 +260,7 @@ class ProviderStoreController extends Controller
                 'pickup_time_id' => $providerParams['pickup_time_id'] ?? null
             ];
 
-            $cart->clearByProviderKey($provider_key);
+//            $cart->clearByProviderKey($provider_key); TODO delete after test
 
             $provider->sendOrder($data);
         }

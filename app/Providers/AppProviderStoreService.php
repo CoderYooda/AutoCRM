@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use App\Services\ProviderService\Contract\CartInterface;
 use App\Services\ProviderService\Providers;
-use App\Services\ProviderService\Services\Providers\ShateM;
 use App\Services\ProviderService\Services\Cart\CartDatabase;
 use App\Services\ProviderService\Services\Providers\AutoEuro;
 use App\Services\ProviderService\Services\Providers\AutoPiter;
@@ -21,6 +20,7 @@ use App\Services\ProviderService\Services\Providers\ProfitLiga;
 use App\Services\ProviderService\Services\Providers\Rossko;
 use App\Services\ProviderService\Services\Providers\StParts;
 use App\Services\ProviderService\Services\Providers\Trinity;
+use App\Services\ProviderService\Services\Providers\ShateM;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 

@@ -72,7 +72,6 @@ class SearchController extends Controller
             return strtolower($item['brand']);
         })->toArray();
 
-
         foreach ($products as $product) {
 
             if ($this->isBrandAlreadyInArray($product->supplier->name, $product->article, $brands)) continue;

@@ -13,7 +13,6 @@ use App\Traits\CartProviderOrderCreator;
 use Exception;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Auth;
-use stdClass;
 
 class ShateM implements ProviderInterface
 {
@@ -202,6 +201,8 @@ class ShateM implements ProviderInterface
                 ]
             ];
 
+            if($method == 'POST') $options['form_params'] = $params;
+
             if($method == 'GET') $fullUrl .= '?' . http_build_query($params);
 
             $response = $client->request($method, $fullUrl, $options);
@@ -296,45 +297,32 @@ class ShateM implements ProviderInterface
 
     public function sendOrder(array $data): bool
     {
-//        $orders = [];
-//
-//        foreach ($data['orders'] as $product) {
-//
-//            $orderInfo = json_decode($product->data, true);
-//
-//            $orders[] = [
-//                'internal_id'   => $product->id,
-//                'bid'           => $orderInfo['model']['bid'],
-//                'code'          => $orderInfo['model']['code'],
-//                'producer'      => $orderInfo['model']['producer'],
-//                'caption'       => $orderInfo['model']['caption'],
-//                'supplier_id'   => $orderInfo['model']['supplier_id'],
-//                'stock'         => $orderInfo['model']['stock'],
-//                'price'         => $orderInfo['model']['price'],
-//                'saled_price'   => $orderInfo['model']['price'] + sum_percent($orderInfo['model']['price'], 20),
-//                'quantity'      => $product->count,
-//                'source'        => $orderInfo['model']['source'],
-//                'comment'       => $data['comment'] ?? '',
-//                'deliverydays'  => $orderInfo['model']['deliverydays'],
-//                'minOrderCount' => $orderInfo['model']['minOrderCount'],
-//            ];
-//        }
-//
-//        $params = [
-//            'parts' => $orders
-//        ];
-//
-//        $results = $this->query('cart/saveGoods', $this->createParams($params), true);
-//
-//        $idList = collect($results['data'])->collapse()->toArray();
-//
-//        $params = [
-//            'IDs' => $idList
-//        ];
-//
-//        $results = $this->query('cart/confirm', $this->createParams($params), true);
-//
-//        $this->createProviderOrder($data);
+        $orders = [];
+
+        foreach ($data['orders'] as $order) {
+
+            $orderInfo = json_decode($order->data, true);
+
+            $orders[] = [
+                'ArticleCode' => $orderInfo['model']['ArticleCode'],
+                'TradeMarkName' => $orderInfo['model']['TradeMarkName'],
+                'Price' => $orderInfo['model']['Price'],
+                'Quantity' => $order->count,
+                'Hash' => $orderInfo['model']['Hash'],
+            ];
+        }
+
+        $params = [
+            'Comment' => $data['comment'],
+            'ShippingAddressCode' => $data['delivery_address_id'],
+            'Items' => $orders,
+        ];
+
+        $results = $this->query('api/cart/CreateOrderFast', 'POST', $params);
+
+        dd($results, $params);
+
+        $this->createProviderOrder($data);
 
         return true;
     }
@@ -344,9 +332,28 @@ class ShateM implements ProviderInterface
         return [];
     }
 
+    protected function getAgreementCode()
+    {
+        $response = $this->query('api/user/agreements', 'GET');
+
+        return last($response)['Code'];
+    }
+
     public function getDeliveryToAddresses(): array
     {
-        return [];
+        $params = [
+            'agreementCode' => $this->getAgreementCode()
+        ];
+
+        $addresses = $this->query('api/cart/GetShippingAddresses', 'GET', $params);
+
+        $results = [];
+
+        foreach ($addresses as $address) {
+            $results[$address['Code']] = $address['Address'];
+        }
+
+        return $results;
     }
 
     public function getPaymentTypes(): array
