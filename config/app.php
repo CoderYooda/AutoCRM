@@ -76,6 +76,8 @@ return [
         App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\AccessServiceProvider::class,
+        App\Providers\FacadeServiceProvider::class,
 
         Barryvdh\Debugbar\ServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
@@ -151,7 +153,8 @@ return [
         'DNS2D' => Milon\Barcode\Facades\DNS2DFacade::class,
         'Image' => Intervention\Image\Facades\Image::class,
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
-        'PDF' => Barryvdh\DomPDF\Facade::class
+        'PDF' => Barryvdh\DomPDF\Facade::class,
+        'Notify' => App\Facades\NotifyServiceFacade::class,
     ],
 
 ];

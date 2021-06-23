@@ -22,6 +22,7 @@ use App\Models\Store;
 use App\Models\User;
 use App\Services\ShopManager\ShopManager;
 use Illuminate\Support\Facades\Auth;
+use App\Facades\NotifyServiceFacade as Notify;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
@@ -198,9 +199,13 @@ class CartController extends Controller
 
             $orderEmails = $this->shop->orderEmails->pluck('email');
 
-            Mail::to($orderEmails)->send(new NewOrderEmail($order));
+            Notify::sendMail($order, 'newOrderEmail', $orderEmails->first(), 'Поступил новый заказ №' . $order->id);
 
-            Mail::to($partner->email)->send(new ModerateOrder($order));
+            Notify::sendMail($order, 'moderateOrder', $partner->email, 'Ваш заказ №' . $order->id . ' ожидает проверки');
+//
+//            Mail::to($orderEmails)->send(new NewOrderEmail($order));
+//
+//            Mail::to($partner->email)->send(new ModerateOrder($order));
 
 
             $cart->clear();

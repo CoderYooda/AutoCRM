@@ -5,10 +5,13 @@ namespace App\Models;
 use App\Http\Controllers\API\SberbankController;
 use App\Mail\Shop\PaymentOrder;
 use App\Http\Controllers\API\TinkoffMerchantAPI;
+use App\Repositories\Notification\NotificationRepository;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Mail;
 use YandexCheckout\Client;
+use App\Facades\NotifyServiceFacade as Notify;
+
 
 Carbon::setToStringFormat('d.m.Y H:i');
 
@@ -232,7 +235,9 @@ class Order extends Model
             ]);
         }
 
-        Mail::to($this->email)->send(new PaymentOrder($this));
+//        Mail::to($this->email)->send(new PaymentOrder($this));
+
+        Notify::sendMail($this, 'paymentOrder', $this->email, 'Заказ №' . $this->id . ' ожидает оплаты');
 
         return redirect($paymentUrl);
     }

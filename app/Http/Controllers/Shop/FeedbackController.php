@@ -8,6 +8,7 @@ use App\Mail\Shop\FeedbackMail;
 use App\Models\Shop;
 use App\Services\ShopManager\ShopManager;
 use Illuminate\Support\Facades\Mail;
+use App\Facades\NotifyServiceFacade as Notify;
 
 class FeedbackController extends Controller
 {
@@ -28,8 +29,8 @@ class FeedbackController extends Controller
             'phone' => $request->phone,
             'shop' => $this->shop
         ];
-
-        Mail::to($mails)->send(new FeedbackMail($data));
+        Notify::sendMail($data, 'callbackMail', $mails->first(), 'Заявка на обратный звонок');
+//        Mail::to($mails)->send(new FeedbackMail($data));
 
         return response()->json([
             'type' => 'success',
