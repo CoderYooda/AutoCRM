@@ -198,21 +198,19 @@ class ShateM implements ProviderInterface
             $options = [
                 'headers' => [
                     'Token' => $token,
+                    'Content-Type' => 'application/json',
                 ]
             ];
 
-            if($method == 'POST') $options['form_params'] = $params;
+            if($method == 'POST') $options['body'] = json_encode($params);
 
             if($method == 'GET') $fullUrl .= '?' . http_build_query($params);
 
             $response = $client->request($method, $fullUrl, $options);
 
             $data = json_decode($response->getBody()->getContents(), true);
-
         } catch (Exception $exception) {
             $data = $exception;
-
-            dd($exception);
         }
 
         $this->errorHandler($data);
@@ -308,6 +306,8 @@ class ShateM implements ProviderInterface
                 'TradeMarkName' => $orderInfo['model']['TradeMarkName'],
                 'Price' => $orderInfo['model']['Price'],
                 'Quantity' => $order->count,
+                'DeliveryDate' => $orderInfo['model']['DeliveryDate'],
+                'ShippingDate' => $orderInfo['model']['ShippingDate'],
                 'Hash' => $orderInfo['model']['Hash'],
             ];
         }
@@ -319,8 +319,6 @@ class ShateM implements ProviderInterface
         ];
 
         $results = $this->query('api/cart/CreateOrderFast', 'POST', $params);
-
-        dd($results, $params);
 
         $this->createProviderOrder($data);
 
@@ -334,9 +332,14 @@ class ShateM implements ProviderInterface
 
     protected function getAgreementCode()
     {
-        $response = $this->query('api/user/agreements', 'GET');
+        $cacheKey = 'api_agreement_' . $this->service_key . $this->company->id;
 
-        return last($response)['Code'];
+        return Cache::remember($cacheKey, Carbon::now()->addMinutes(10), function () {
+            $response = $this->query('api/user/agreements', 'GET');
+
+            return last($response)['Code'];
+        });
+
     }
 
     public function getDeliveryToAddresses(): array

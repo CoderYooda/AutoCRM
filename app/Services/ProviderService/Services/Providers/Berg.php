@@ -139,7 +139,7 @@ class Berg implements ProviderInterface
             'analogues' => []
         ];
 
-        if ($items == []) return $results;
+        if (!count($items)) return $results;
 
         $originalIndex = 0;
         $analogueIndex = 0;
@@ -169,8 +169,8 @@ class Berg implements ProviderInterface
 
             $results[$listName][] = [
                 'index' => $is_analogue ? $analogueIndex : $originalIndex,
-                'name' => $store['Description'],
-                'code' => $store['OfferKey'],
+                'name' => $store['desc'],
+                'code' => $store['code'],
                 'rest' => $store['rest'],
                 'days_min' => $store['days_min'],
                 'days_max' => $store['days_max'],
@@ -282,23 +282,26 @@ class Berg implements ProviderInterface
 
         $params = [
             'order' => [
-                'is_test' => 1,
+                'is_test' => 0,
                 'payment_type' => $data['payment_type_id'],
                 'dispatch_type' => $data['delivery_type_id'],
                 'dispatch_at' => $data['date_shipment_id'],
                 'dispatch_time' => 1, //Тестовое (метод времени отправки не реализован на фронте
                 'comment' => $data['comment'],
-                'shipment_address_id' => $data['delivery_address_id'],
                 'items' => $products
             ]
         ];
+
+        if($data['delivery_type_id'] == 3) $params['shipment_address_id'] = $data['delivery_address_id'];
 
         if($params['order']['dispatch_type'] == 2) {
 
             unset($params['order']['shipment_address_id']);
         }
 
-        $this->query('/ordering/place_order', $params, 'POST'); //Подтверждение заказа
+        $response = $this->query('/ordering/place_order', $params, 'POST'); //Подтверждение заказа
+
+        dd($response);
 
         $this->createProviderOrder($data);
 

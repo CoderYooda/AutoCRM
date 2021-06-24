@@ -97,6 +97,7 @@ class ProviderStoreController extends Controller
         try {
             $stores = $provider->getStoresByArticleAndBrand($article, $manufacturer);
         } catch (\Exception $exception) {
+            dd($exception);
             $stores = [
                 'originals' => [],
                 'analogues' => []
@@ -260,7 +261,7 @@ class ProviderStoreController extends Controller
                 'pickup_time_id' => $providerParams['pickup_time_id'] ?? null
             ];
 
-//            $cart->clearByProviderKey($provider_key); TODO delete after test
+            $cart->clearByProviderKey($provider_key);
 
             $provider->sendOrder($data);
         }
