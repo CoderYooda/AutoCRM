@@ -104,6 +104,7 @@ class Berg implements ProviderInterface
                     'brand_name' => $brand
                 ]
             ],
+            'warehouse_types' => [1, 2],
             'analogs' => 1
         ];
 
@@ -209,6 +210,8 @@ class Berg implements ProviderInterface
         }
         catch (\Exception $exception) {
           $result = $exception;
+
+          dd($exception);
         }
 
         $this->errorHandler($result);
@@ -269,9 +272,11 @@ class Berg implements ProviderInterface
     {
         $products = [];
 
-        foreach ($data['orders'] as $product) {
+        foreach ($data['orders'] as $index => $product) {
 
             $orderInfo = json_decode($product->data, true);
+
+//            if(!$index) dd($orderInfo);
 
             $products[] = [
                 'resource_id' => $orderInfo['model']['resource_id'],

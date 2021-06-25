@@ -261,7 +261,7 @@ class ProviderStoreController extends Controller
                 'pickup_time_id' => $providerParams['pickup_time_id'] ?? null
             ];
 
-            $cart->clearByProviderKey($provider_key);
+//            $cart->clearByProviderKey($provider_key);
 
             $provider->sendOrder($data);
         }
