@@ -210,8 +210,6 @@ class Berg implements ProviderInterface
         }
         catch (\Exception $exception) {
           $result = $exception;
-
-          dd($exception);
         }
 
         $this->errorHandler($result);

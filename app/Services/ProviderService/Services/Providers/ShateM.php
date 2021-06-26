@@ -253,23 +253,7 @@ class ShateM implements ProviderInterface
 
     private function errorHandler($response) : void
     {
-//        if (is_object($response)) {
-//
-//            $errorMessage = $response->getMessage();
-//
-//            foreach ($this->errors as $code => $info) {
-//                if (strpos($errorMessage, $info['search']) === false) continue;
-//                throw new \Exception($info['return'], $code);
-//            }
-//        } else {
-//
-//            $errorMessage = $response;
-//
-//            foreach ($this->errors as $code => $info) {
-//                if ($errorMessage['count'] == $info['search'] && empty($errorMessage['data']))
-//                throw new \Exception($info['return'], $code);
-//            }
-//        }
+
     }
 
     public function getSelectFieldValues(string $field_name): array
