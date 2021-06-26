@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Mpdf\Mpdf;
 use YandexCheckout\Client;
+use App\Facades\NotifyServiceFacade as Notify;
 
 class OrderController extends Controller
 {
@@ -47,8 +48,8 @@ class OrderController extends Controller
 
                 if ($api->status == 'CONFIRMED') {
                     $order->update(['status' => 2]);
-
-                    Mail::to($order->email)->send(new PayedOrder($order));
+                    Notify::sendMail($order, 'payedOrder', $order->email, 'Заказ №' . $order->id . ' успешно оплачен.');
+//                    Mail::to($order->email)->send(new PayedOrder($order));
                 } else {
                     $canceled_statuses = [
                         'DEADLINE_EXPIRED',
@@ -71,8 +72,8 @@ class OrderController extends Controller
                 if($response->status == 'succeeded') {
                     $order->update(['status' => 2]);
 
-
-                    Mail::to($order->email)->send(new PayedOrder($order));
+                    Notify::sendMail($order, 'payedOrder', $order->email, 'Заказ №' . $order->id . ' успешно оплачен.');
+//                    Mail::to($order->email)->send(new PayedOrder($order));
                 }
                 else if($response->status == 'canceled') {
                     $order->update(['status' => 3]);
@@ -86,8 +87,8 @@ class OrderController extends Controller
 
                 if($response['OrderStatus'] == 2) {
                     $order->update(['status' => 2]);
-
-                    Mail::to($order->email)->send(new PayedOrder($order));
+                    Notify::sendMail($order, 'payedOrder', $order->email, 'Заказ №' . $order->id . ' успешно оплачен.');
+//                    Mail::to($order->email)->send(new PayedOrder($order));
                 }
                 else {
                     $canceled_statuses = [

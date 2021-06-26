@@ -11,6 +11,7 @@ use App\Models\Order;
 use App\Models\Partner;
 use App\Models\Store;
 use App\Models\Supplier;
+use App\Repositories\Notification\NotificationRepository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,6 +21,7 @@ use App\Models\Product;
 use App\Http\Controllers\UserActionsController as UA;
 use Auth;
 use Illuminate\Support\Facades\Mail;
+use App\Facades\NotifyServiceFacade as Notify;
 
 class ClientOrdersController extends Controller
 {
@@ -196,11 +198,12 @@ class ClientOrdersController extends Controller
             if($client_order->order) {
 
                 if($request->status == Order::WAIT_PICKUP_STATUS && $client_order->order->status != Order::WAIT_PICKUP_STATUS) {
-                    Mail::to($client_order->order->email)->send(new WaitOrder($client_order->order));
+                    Notify::sendMail($client_order->order, 'waitOrder', $client_order->order->email, 'Заказ №' . $client_order->order->id . ' ожидает выдачи');
                 }
 
                 if($request->status == Order::DELIVERY_STATUS && $client_order->order->status != Order::DELIVERY_STATUS) {
-                    Mail::to($client_order->order->email)->send(new RoadOrder($client_order->order));
+                    Notify::sendMail($client_order->order, 'roadOrder', $client_order->order->email, 'Заказ №' .  $client_order->order->id . ' был отправлен');
+//                    Mail::to($client_order->order->email)->send(new RoadOrder($client_order->order));
                 }
 
                 $client_order->order->update(['status' => $request->status]);

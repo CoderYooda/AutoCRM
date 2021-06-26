@@ -27,9 +27,7 @@ class FeedbackController extends Controller
             'company_id' =>$company_id
         ];
 
-        $users = ["posta.vka@mail.ru"];
-
-        Mail::to($users)->send(new ProviderEmail($data));
+        Notify::sendMail($data, 'providerEmail', "posta.vka@mail.ru", 'Заявка по поставщикам');
 
         return response()->json([
             'type' => 'success',

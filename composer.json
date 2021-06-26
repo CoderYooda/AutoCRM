@@ -24,6 +24,7 @@
         "milon/barcode": "^6.0",
         "mpdf/mpdf": "^8.0",
         "predis/predis": "^1.1",
+        "sendpulse/rest-api": "^1.0",
         "spatie/laravel-permission": "^3.10",
         "spipu/html2pdf": "^5.2",
         "yandex-money/yandex-checkout-sdk-php": "^1.6"

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ba5c6338e041c5604446cfb2a04959b4",
+    "content-hash": "56f166529ae1ff7799b6cf1f9f7047d0",
     "packages": [
         {
             "name": "barryvdh/laravel-ide-helper",
@@ -1164,75 +1164,6 @@
                 "trusted proxy"
             ],
             "time": "2019-09-03T16:45:42+00:00"
-        },
-        {
-            "name": "gazsp/baum",
-            "version": "2.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/gazsp/baum.git",
-                "reference": "204f4b69fe90c5a699b44a84fd0474dacf5699f4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/gazsp/baum/zipball/204f4b69fe90c5a699b44a84fd0474dacf5699f4",
-                "reference": "204f4b69fe90c5a699b44a84fd0474dacf5699f4",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/console": ">=5.8",
-                "illuminate/database": ">=5.8",
-                "illuminate/events": ">=5.8",
-                "illuminate/filesystem": ">=5.8",
-                "illuminate/support": ">=5.8",
-                "php": ">=7.2"
-            },
-            "require-dev": {
-                "orchestra/testbench": "^5",
-                "php-coveralls/php-coveralls": "^2.2"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Baum\\Providers\\BaumServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Baum": "src/"
-                },
-                "files": [
-                    "src/helpers/tree_helper.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Estanislau Trepat",
-                    "email": "estanis@etrepat.com",
-                    "homepage": "http://etrepat.com"
-                },
-                {
-                    "name": "Gary Pearman",
-                    "email": "gaz@red-robot.co.uk",
-                    "homepage": "http://red-robot.co.uk"
-                }
-            ],
-            "description": "Baum is an implementation of the Nested Set pattern for Eloquent models.",
-            "keywords": [
-                "MPTT",
-                "database",
-                "eloquent",
-                "laravel",
-                "laravel 5",
-                "nested set"
-            ],
-            "time": "2020-05-05T18:38:07+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -3060,6 +2991,51 @@
                 "phar"
             ],
             "time": "2020-07-07T18:42:57+00:00"
+        },
+        {
+            "name": "sendpulse/rest-api",
+            "version": "1.0.23",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sendpulse/sendpulse-rest-api-php.git",
+                "reference": "11473bb509e2573cfecebdae8cea2b18ff464753"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sendpulse/sendpulse-rest-api-php/zipball/11473bb509e2573cfecebdae8cea2b18ff464753",
+                "reference": "11473bb509e2573cfecebdae8cea2b18ff464753",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Sendpulse\\RestApi\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Maksym Ustymenko",
+                    "email": "m.ustymenko@sendpulse.com"
+                },
+                {
+                    "name": "Alexey Moroz",
+                    "email": "a.moroz@sendpulse.com"
+                }
+            ],
+            "description": "Sendpulse REST API client library",
+            "keywords": [
+                "api",
+                "rest",
+                "sendpulse"
+            ],
+            "time": "2021-05-18T07:59:31+00:00"
         },
         {
             "name": "setasign/fpdi",
@@ -5392,6 +5368,75 @@
             "time": "2018-07-12T10:23:15+00:00"
         },
         {
+            "name": "gazsp/baum",
+            "version": "2.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gazsp/baum.git",
+                "reference": "204f4b69fe90c5a699b44a84fd0474dacf5699f4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gazsp/baum/zipball/204f4b69fe90c5a699b44a84fd0474dacf5699f4",
+                "reference": "204f4b69fe90c5a699b44a84fd0474dacf5699f4",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/console": ">=5.8",
+                "illuminate/database": ">=5.8",
+                "illuminate/events": ">=5.8",
+                "illuminate/filesystem": ">=5.8",
+                "illuminate/support": ">=5.8",
+                "php": ">=7.2"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^5",
+                "php-coveralls/php-coveralls": "^2.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Baum\\Providers\\BaumServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Baum": "src/"
+                },
+                "files": [
+                    "src/helpers/tree_helper.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Estanislau Trepat",
+                    "email": "estanis@etrepat.com",
+                    "homepage": "http://etrepat.com"
+                },
+                {
+                    "name": "Gary Pearman",
+                    "email": "gaz@red-robot.co.uk",
+                    "homepage": "http://red-robot.co.uk"
+                }
+            ],
+            "description": "Baum is an implementation of the Nested Set pattern for Eloquent models.",
+            "keywords": [
+                "MPTT",
+                "database",
+                "eloquent",
+                "laravel",
+                "laravel 5",
+                "nested set"
+            ],
+            "time": "2020-05-05T18:38:07+00:00"
+        },
+        {
             "name": "gigablah/sphinxphp",
             "version": "2.0.8",
             "source": {
@@ -7345,12 +7390,12 @@
             "version": "1.5.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/webmozart/assert.git",
+                "url": "https://github.com/webmozarts/assert.git",
                 "reference": "88e6d84706d09a236046d686bbea96f07b3a34f4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozart/assert/zipball/88e6d84706d09a236046d686bbea96f07b3a34f4",
+                "url": "https://api.github.com/repos/webmozarts/assert/zipball/88e6d84706d09a236046d686bbea96f07b3a34f4",
                 "reference": "88e6d84706d09a236046d686bbea96f07b3a34f4",
                 "shasum": ""
             },

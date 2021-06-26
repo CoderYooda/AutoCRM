@@ -21,14 +21,18 @@ use App\Models\Markup;
 use App\Models\Shop;
 use App\Models\Supplier;
 use App\Models\User;
+use App\Repositories\Notification\NotificationRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use App\Facades\NotifyServiceFacade as Notify;
 
 class ShopController extends Controller
 {
+
+
     public function index(Request $request)
     {
         // точка входа в страницу
@@ -414,12 +418,15 @@ class ShopController extends Controller
                 if ($status == Order::PAYMENT_TYPE_ONLINE) {
                     $order->initPayment();
                 } else {
-                    Mail::to($order->email)->send(new ConfirmOrder($order));
+                    Notify::sendMail($order, 'orderConfirmed', $order->email, 'Заказ подтвержден');
+//                    $this->notify->sendMail($order, 'orderConfirmed', $order->email, 'Заказ подтвержден');
                 }
 
                 $clientOrder->update(['status' => $status]);
             } else {
-                Mail::to($order->email)->send(new CanceledOrder($order));
+                Notify::sendMail($order, 'orderCanceled', $order->email, 'Заказ отменен');
+//                $this->notify->sendMail($order, 'orderCanceled', $order->email, 'Заказ отменен', 'order_canceled');
+
             }
 
             $order->update([
