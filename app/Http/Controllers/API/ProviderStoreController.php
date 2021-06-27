@@ -97,7 +97,6 @@ class ProviderStoreController extends Controller
         try {
             $stores = $provider->getStoresByArticleAndBrand($article, $manufacturer);
         } catch (\Exception $exception) {
-            dd($exception);
             $stores = [
                 'originals' => [],
                 'analogues' => []

@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Admin\CompanyController;
 use App\Http\Controllers\API\ProviderStoreController;
-use App\Models\Supplier;
-use App\Services\ProviderService\Providers;
 use Illuminate\Http\Request;
 use \App\Http\Controllers\Admin\UserController;
 
