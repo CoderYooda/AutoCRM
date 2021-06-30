@@ -91,9 +91,9 @@ class EntranceController extends Controller
 
                 $pivot_id = $product['pivot_id'];
 
-                $entrance_count = DB::table('article_entrance')->where('provider_pivot_id', $pivot_id)->sum('count');
+                $entrance_count = ProviderOrder::getEnteredProductCountByProviderId($pivot_id);
 
-                $provider_count = $providerPivotProducts->where('id', $pivot_id)->first()->count;
+                $provider_count = (int)$providerPivotProducts->where('id', $pivot_id)->first()->count;
 
                 $form_count = (int)$product['count'];
 

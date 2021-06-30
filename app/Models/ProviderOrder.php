@@ -49,11 +49,26 @@ class ProviderOrder extends Model
             ->withPivot('id', 'count', 'price', 'nds', 'nds_percent', 'nds_included', 'total');
     }
 
+    public static function getEnteredProductCountByProviderId($providerId)
+    {
+        $count = (int)DB::table('article_entrance')
+            ->where('provider_pivot_id', $providerId)
+            ->sum('count');
+
+        $released = (int)DB::table('article_entrance')
+            ->where('provider_pivot_id', $providerId)
+            ->sum('released_count');
+
+        return $count - $released;
+    }
+
     public function getArticleCountByPivotId($id)
     {
-        $product = $this->products()->wherePivot('id', $id)->first();
+//        $product = $this->products()->wherePivot('id', $id)->first();
 
-        return $product->pivot->count;
+        $pivot = DB::table('article_provider_orders')->find($id);
+
+        return $pivot->count;
     }
 
     public function getArticleEnteredCountByPivotId($id)

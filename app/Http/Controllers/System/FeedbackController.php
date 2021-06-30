@@ -3,17 +3,14 @@
 namespace App\Http\Controllers\System;
 
 use App\Http\Requests\Providers\Feedback\FeedbackRequest;
-use App\Mail\Provider\ProviderEmail;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
+use App\Facades\NotifyServiceFacade as Notify;
 
 class FeedbackController extends Controller
 {
-    public static function sendEmail (FeedbackRequest $request) {
-
-        $data = [];
-
+    public static function sendEmail (FeedbackRequest $request)
+    {
         $user = Auth::user();
         $userFio = $user->partner->outputName();
         $userPhone = $user->partner->firstActivePhoneNumber() != '' ? $user->partner->firstActivePhoneNumber() : $user->phone;

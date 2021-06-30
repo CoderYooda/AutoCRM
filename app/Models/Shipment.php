@@ -124,10 +124,11 @@ class Shipment extends Model
 
     public function incrementRefundedCount($product_id, $amount)
     {
-        $products = DB::table('article_shipment')->where([
-            'shipment_id' => $this->id,
-            'product_id' => $product_id,
-        ])
+        $products = DB::table('article_shipment')
+            ->where([
+                'shipment_id' => $this->id,
+                'product_id' => $product_id,
+            ])
             ->whereRaw('refunded_count != count')
             ->get();
 
@@ -143,9 +144,12 @@ class Shipment extends Model
 
                 if ($product->refunded_count >= $product->count) continue;
 
+                //Прибавление возвращенных товаров в продажу
                 DB::table('article_shipment')
                     ->where('id', $product->id)
                     ->increment('refunded_count', 1);
+
+                //Возврат товара в поступление
                 DB::table('article_entrance')
                     ->where('product_id', $product->product_id)
                     ->where('released_count', $product_count)

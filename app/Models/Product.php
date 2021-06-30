@@ -253,8 +253,11 @@ class Product extends Model
 
     public function getEntrancesCount()
     {
+        $user = Auth::user();
+
         $entrances = DB::table('article_entrance')
             ->where('product_id', $this->id)
+            ->where('company_id', $user->company_id)
             ->get();
 
         $count = $entrances->sum('count');

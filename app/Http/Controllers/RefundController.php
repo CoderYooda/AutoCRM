@@ -135,12 +135,7 @@ class RefundController extends Controller
             foreach ($request['products'] as $id => $product) {
 
                 #Добавляем количество возвращенных товаров в продажу
-                $entrances = $shipment->incrementRefundedCount($id, $product['count']);
-
-                #Убаляем количество реализованных товаров с поступления
-                foreach ($entrances as $entrance_id => $amount) {
-                    Entrance::decrementReleasedCount($entrance_id, $id, $amount);
-                }
+                $shipment->incrementRefundedCount($id, $product['count']);
 
                 #Создаем связь в article_refund
                 $shipment_price = $shipment->getProductPriceFromShipment($id);
