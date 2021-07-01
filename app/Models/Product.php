@@ -253,11 +253,16 @@ class Product extends Model
 
     public function getEntrancesCount()
     {
-        $user = Auth::user();
+        $shopManager = app(ShopManager::class);
+
+        $shop = $shopManager->getCurrentShop();
+
+        /** @var Company $company */
+        $company_id = $shop->company_id ?? Auth::user()->company_id;
 
         $entrances = DB::table('article_entrance')
             ->where('product_id', $this->id)
-            ->where('company_id', $user->company_id)
+            ->where('company_id', $company_id)
             ->get();
 
         $count = $entrances->sum('count');
