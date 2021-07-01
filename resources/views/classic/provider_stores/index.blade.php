@@ -6,12 +6,19 @@
         <div class="box-lister" style="width: 1px!important;">
             <div class="box mb-15">
                 <div class="w-100 box-search">
-                    <div class="box m-10">
-                        <input id="search" name="search" placeholder="Поиск по складам" class="input w-100" value="{{ request('search') }}" type="text">
+                    <div class="d-flex m-10">
+                        <input id="search" name="search" placeholder="Поиск по складам" class="input box mr-5 w-100" value="{{ request('search') }}" type="text">
                         <input type="hidden" name="service_key" value="{{ $services->first()->key ?? 0 }}" />
-                        <span class="input-group-append" data-toggle="tooltip" data-placement="top" title="Очистить поиск">
-                            <button class="btn_clean" onclick="window.store.cleanSearch()"></button>
-                        </span>
+{{--                        <span class="input-group-append" data-toggle="tooltip" data-placement="top" title="Очистить поиск">--}}
+{{--                            <button class="btn_clean" onclick="window.store.cleanSearch()"></button>--}}
+{{--                        </span>--}}
+                        <button onclick="store.searchProviderStores()" class="button primary" type="submit">Найти</button>
+
+                        @can('Создавать заявки поставщикам')
+                            @if(count($services))
+                                <button class="button green btn_with_badge ml-5 float-right" onclick="store.registerProviderOrder(this)">Корзина</button>
+                            @endif
+                        @endcan
                     </div>
                 </div>
 
@@ -30,12 +37,6 @@
                         </div>
 
                     @endforelse
-
-                    @can('Создавать заявки поставщикам')
-                        @if(count($services))
-                            <button class="button green btn_with_badge mr-10 float-right" onclick="store.registerProviderOrder(this)">Корзина</button>
-                        @endif
-                    @endcan
 
                 </div>
 

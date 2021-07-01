@@ -304,8 +304,12 @@ trait ABCP
 
     public function sendOrder(array $data): bool
     {
+        $params = [
+            'basketId' => 'bbcrm',
+        ];
+
         //Очищаем корзину от заказов
-        $this->query('basket/clear/', [], 'POST');
+        $this->query('basket/clear/', $params, 'POST');
 
         $orders = [];
 
@@ -322,16 +326,28 @@ trait ABCP
         }
 
         $params = [
+            'wholeOrderOnly' => 1,
             'positions'       => $orders,
+            'basketId' => 'bbcrm',
+        ];
+
+        //Добавляем позиции в корзину
+        $response = $this->query('basket/add', $params, 'POST');
+
+        $params = [
+            'basketId' => 'bbcrm',
             'shipmentMethod'  => $data['delivery_type_id'],
             'paymentMethod'   => $data['payment_type_id'],
             'shipmentAddress' => $data['delivery_address_id'],
             'shipmentOffice'  => $data['pickup_address_id'],
             'shipmentDate'    => $data['date_shipment_id'],
-            'comment'         => $data['comment']
+            'comment'         => $data['comment'],
         ];
 
-        $response = $this->query('orders/instant', $params, 'POST');
+        //Делаем заказ, не затрагивая корзину ЛК
+        $response = $this->query('basket/order', $params, 'POST');
+
+        dd($response);
 
         foreach ($response['orders'] as $order_id => $orderInfo) {
             CartProviderOrder::query()->create([

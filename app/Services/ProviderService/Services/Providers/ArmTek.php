@@ -84,7 +84,8 @@ class ArmTek implements ProviderInterface
             'BRAND'      => $brand,
             'KUNNR_RG'   => $this->getApiKunnr(),
             'PIN'        => $article,
-            'QUERY_TYPE' => 2
+            'QUERY_TYPE' => 2,
+            'PROGRAM' => 'LP',
         ];
 
         $items = $this->query('/ws_search/search', $params, 'POST');
@@ -245,13 +246,15 @@ class ArmTek implements ProviderInterface
             'VKORG'     => $this->company->getServiceFieldValue($this->service_key, 'sales_organization'),
             'KUNRG'     => $this->getApiKunnr(),
             'INCOTERMS' => $data['delivery_type_id'],
-            'KUNZA'     => $data['delivery_type_id'] == 1 ? $data['pickup_address_id'] : ['delivery_address_id'],
+            'KUNZA'     => $data['delivery_type_id'] == 1 ? $data['pickup_address_id'] : $data['delivery_address_id'],
             'TEXT_ORD'  => $data['comment'] ?? '',
             'DBTYP' => 3,
             'ITEMS'     => $orders
         ];
 
         $items = $this->query('/ws_order/createOrder', $params, 'POST');
+
+        dd($items);
 
         $this->createProviderOrder($data);
 

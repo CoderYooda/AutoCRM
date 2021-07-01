@@ -1071,6 +1071,7 @@ class storePage extends Page{
         let object = this;
         let searchFn;
         let search_field = document.getElementById("search");
+        
         if(search_field){
             searchFn = window.helper.debounce((e) => {
 
@@ -1080,6 +1081,7 @@ class storePage extends Page{
                 if(object.search == ''){
                     object.category_id = object.root_category;
                 }
+
                 if(this.table) {
                     window.helper.insertParamUrl('category_id', 'null');
                     this.table.setRequest('category_id', null, false);
@@ -1089,10 +1091,12 @@ class storePage extends Page{
                         this.table.freshData();
                     }
                 }
-                else {
-                    this.searchProviderStores();
-                }
+                // Убрал для поиска через кнопку
+                // else {
+                //     this.searchProviderStores();
+                // }
             }, 400);
+
             search_field.addEventListener("keydown", searchFn);
             search_field.addEventListener("paste", searchFn);
             search_field.addEventListener("delete", searchFn);

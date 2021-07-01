@@ -152,7 +152,7 @@ class Shipment extends Model
                 //Возврат товара в поступление
                 DB::table('article_entrance')
                     ->where('product_id', $product->product_id)
-                    ->where('released_count', $product_count)
+                    ->where('released_count', '!=', 0)
                     ->decrement('released_count', 1);
 
                 $product->count++;

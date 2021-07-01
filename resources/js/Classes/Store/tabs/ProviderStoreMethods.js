@@ -1,6 +1,6 @@
 class providerStoresMethods {
     constructor() {
-        console.log('Методы складов поставщиков инициализированы.')
+        console.log(' Методы складов поставщиков инициализированы.')
     }
 }
 

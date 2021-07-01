@@ -58,30 +58,12 @@ class Entrance extends Model
 
     public static function decrementReleasedCount(int $entrance_id, int $article_id, int $count)
     {
-        $released = DB::table('article_entrance')
-            ->where([
-                'entrance_id' => $entrance_id,
-                'product_id'  => $article_id
-            ])
-            ->get(['released_count']);
-
-        dd($entrance_id, $article_id, $released);
-
         DB::table('article_entrance')
             ->where([
                 'entrance_id' => $entrance_id,
                 'product_id'  => $article_id
             ])
-            ->update([
-                'released_count' => DB::raw("(released_count + 1)")
-            ]);
-
-        dd(DB::table('article_entrance')
-            ->where([
-                'entrance_id' => $entrance_id,
-                'product_id'  => $article_id
-            ])
-            ->get());
+            ->decrement('released_count', $count);
     }
 
     public static function incrementReleasedCount(int $entrance_id, int $article_id, int $count)
