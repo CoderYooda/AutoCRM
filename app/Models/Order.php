@@ -3,13 +3,11 @@
 namespace App\Models;
 
 use App\Http\Controllers\API\SberbankController;
-use App\Mail\Shop\PaymentOrder;
 use App\Http\Controllers\API\TinkoffMerchantAPI;
-use App\Repositories\Notification\NotificationRepository;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Mail;
 use YandexCheckout\Client;
+use Idma\Robokassa\Payment;
 use App\Facades\NotifyServiceFacade as Notify;
 
 
@@ -227,6 +225,19 @@ class Order extends Model
                 $paymentId = $response['orderId'];
                 $paymentUrl = $response['formUrl'];
             }
+            else if($paymentMethod['name'] == 'robokassa') {
+                $api = new Payment($paymentMethod['params']['login'], $paymentMethod['params']['first_password'], $paymentMethod['params']['second_password']);
+
+                $totalPrice = $this->getTotalPrice();
+
+                $paymentId = $this->id;
+                $paymentUrl = $api
+                    ->setEmail($this->email)
+                    ->setInvoiceId($this->id)
+                    ->setSum($totalPrice)
+                    ->setDescription('Оплата заказа в интернет магазине №' . $this->id)
+                    ->getPaymentUrl();
+            }
 
             $this->update([
                 'payment_type' => $paymentMethod['name'],
@@ -240,5 +251,20 @@ class Order extends Model
         Notify::sendMail($this, 'paymentOrder', $this->email, 'Заказ №' . $this->id . ' ожидает оплаты');
 
         return redirect($paymentUrl);
+    }
+
+    protected function getTotalPrice()
+    {
+        $totalPrice = 0;
+
+        foreach ($this->positions as $position) {
+            $totalPrice += $position->price * $position->count;
+        }
+
+        if ($this->delivery_type == Order::DELIVERY_TYPE_TRANSPORT && $this->delivery_price > 0) {
+            $totalPrice += $this->delivery_price;
+        }
+
+        return $totalPrice;
     }
 }

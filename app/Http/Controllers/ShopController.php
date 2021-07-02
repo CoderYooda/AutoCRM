@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\ModelWasStored;
+use YandexCheckout\Model\PaymentStatus;
 use App\Http\Controllers\HelpController as HC;
 use App\Http\Requests\Shop\StoreRequest;
 use App\Http\Requests\Shop\UpdateAboutRequest;
@@ -255,6 +256,7 @@ class ShopController extends Controller
                 if (str_contains_cyrillic($domain)) $domain = idn_to_ascii($domain, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
                 exec('sh test.sh ' . $domain);
             }
+
             $shop = Shop::updateOrCreate(['company_id' => Auth::user()->company_id], [
                 'show_empty'          => $request->show_empty,
                 'show_amount'         => $request->show_amount,
@@ -318,6 +320,14 @@ class ShopController extends Controller
 
         $shop->paymentMethods()->delete();
         $shop->paymentMethods()->createMany($methods);
+
+        /** @var Order[] $orders */
+        $orders = Order::query()
+            ->where('status', Order::WAIT_PAYMENT_STATUS)
+            ->where('company_id', $shop->company_id)
+            ->get();
+
+        foreach ($orders as $order) $order->initPayment();
 
         return response()->json([
             'type'    => 'success',

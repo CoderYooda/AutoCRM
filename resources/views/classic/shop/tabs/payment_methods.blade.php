@@ -54,6 +54,20 @@
 
                     </div>
 
+                    <label>Robokassa</label>
+                    <div data-error="methods[robokassa]" class="input-group mb-10 method">
+
+                        <input type="text" name="methods[robokassa][login]" class="form-control mr-5" placeholder="Идентификатор магазина" value="{{ $paymentMethods['robokassa']['params']['login'] ?? '' }}">
+                        <input type="text" name="methods[robokassa][first_password]" class="form-control mr-5" placeholder="Пароль #1" value="{{ $paymentMethods['robokassa']['params']['first_password'] ?? '' }}">
+                        <input type="text" name="methods[robokassa][second_password]" class="form-control mr-5" placeholder="Пароль #2" value="{{ $paymentMethods['robokassa']['params']['second_password'] ?? '' }}">
+
+                        <label data-error="methods_main" class="custom_checkbox">
+                            <input type="radio" class="not_default" name="methods_main" @if($paymentMethods['sberbank']['main'] ?? false) checked @endif value="robokassa" />
+                            <span></span>
+                        </label>
+
+                    </div>
+
                 </div>
 
                 <div>
