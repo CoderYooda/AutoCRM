@@ -49,9 +49,9 @@ class warrantDialog extends Modal{
     save(elem){
         if(window.isXHRloading) return;
 
-        window.axform.send(elem, (e) => {
-            if(e.status === 200) this.finitaLaComedia(true);
-        });
+        // window.axform.send(elem, (e) => {
+        //     if(e.status === 200) this.finitaLaComedia(true);
+        // });
     }
 
     selectPartner(id){
