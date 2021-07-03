@@ -47,11 +47,14 @@ class warrantDialog extends Modal{
     }
 
     save(elem){
+
+        event.preventDefault();
+
         if(window.isXHRloading) return;
 
-        // window.axform.send(elem, (e) => {
-        //     if(e.status === 200) this.finitaLaComedia(true);
-        // });
+        window.axform.send(elem, (e) => {
+            if(e.status === 200) this.finitaLaComedia(true);
+        });
     }
 
     selectPartner(id){
