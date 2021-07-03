@@ -1,12 +1,12 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
 use \App\Models\Service;
 use \App\Models\ServiceField;
+use Illuminate\Database\Migrations\Migration;
 
-class AddMotexcService extends Migration
+class AddAutotradeService extends Migration
 {
-    protected $key = 'motexc';
+    protected $key = 'autotrade';
 
     /**
      * Run the migrations.
@@ -17,8 +17,8 @@ class AddMotexcService extends Migration
     {
         Service::query()->create([
             'category_id' => 0,
-            'name' => 'Мотекс',
-            'url' => 'https://motexc.ru/',
+            'name' => 'АвтоТрейд',
+            'url' => 'https://www.sklad.autotrade.su/',
             'key' => $this->key,
         ]);
 

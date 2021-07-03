@@ -39,6 +39,14 @@ class CartDatabase implements CartInterface
         ]);
     }
 
+    public function getProductsCountByProvider($providerKey)
+    {
+        return DB::table($this->table)
+            ->where('user_id', $this->user_id)
+            ->where('provider_key', $providerKey)
+            ->count();
+    }
+
     public function getProducts()
     {
         return DB::table($this->table)->where('user_id', $this->user_id)->get();

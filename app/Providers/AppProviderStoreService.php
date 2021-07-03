@@ -10,6 +10,7 @@ use App\Services\ProviderService\Services\Providers\AutoEuro;
 use App\Services\ProviderService\Services\Providers\AutoPiter;
 use App\Services\ProviderService\Services\Providers\AutoRus;
 use App\Services\ProviderService\Services\Providers\Berg;
+use App\Services\ProviderService\Services\Providers\AutoTrade;
 use App\Services\ProviderService\Services\Providers\FavoritParts;
 use App\Services\ProviderService\Services\Providers\ForumAuto;
 use App\Services\ProviderService\Services\Providers\Mikado;
@@ -49,6 +50,7 @@ class AppProviderStoreService extends ServiceProvider
             ProfitLiga::class,
             ShateM::class,
             Motex::class,
+            AutoTrade::class,
         ], [ ProviderInterface::class ]);
 
         $this->app->bind(Providers::class, function (Application $app) {

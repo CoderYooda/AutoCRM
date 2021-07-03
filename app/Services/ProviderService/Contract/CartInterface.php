@@ -27,4 +27,6 @@ interface CartInterface
     public function clear();
 
     public function clearByProviderKey($key);
+
+    public function getProductsCountByProvider($providerKey);
 }

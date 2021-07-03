@@ -7,12 +7,14 @@
             <div class="box mb-15">
                 <div class="w-100 box-search">
                     <div class="d-flex m-10">
-                        <input id="search" name="search" placeholder="Поиск по складам" class="input box mr-5 w-100" value="{{ request('search') }}" type="text">
-                        <input type="hidden" name="service_key" value="{{ $services->first()->key ?? 0 }}" />
-{{--                        <span class="input-group-append" data-toggle="tooltip" data-placement="top" title="Очистить поиск">--}}
-{{--                            <button class="btn_clean" onclick="window.store.cleanSearch()"></button>--}}
-{{--                        </span>--}}
-                        <button onclick="store.searchProviderStores()" class="button primary" type="submit">Найти</button>
+                        <form action="#" class="w-100 d-flex" onsubmit="store.searchProviderStores(event)">
+                            <input id="search" name="search" placeholder="Поиск по складам" class="input box mr-5 w-100" value="{{ request('search') }}" type="text">
+                            <input type="hidden" name="service_key" value="{{ $services->first()->key ?? 0 }}" />
+    {{--                        <span class="input-group-append" data-toggle="tooltip" data-placement="top" title="Очистить поиск">--}}
+    {{--                            <button class="btn_clean" onclick="window.store.cleanSearch()"></button>--}}
+    {{--                        </span>--}}
+                            <button type="submit" class="button primary">Найти</button>
+                        </form>
 
                         @can('Создавать заявки поставщикам')
                             @if(count($services))

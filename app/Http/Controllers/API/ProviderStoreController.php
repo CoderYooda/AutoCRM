@@ -335,6 +335,8 @@ class ProviderStoreController extends Controller
 
         foreach ($providers as $service_key => $provider) {
 
+            if(!$cart->getProductsCountByProvider($provider->getServiceKey())) continue;
+
             $deliveryInfo[$service_key] = [
                 'Список способов доставки' => [
                     'params' => $provider->getDeliveryTypes(),

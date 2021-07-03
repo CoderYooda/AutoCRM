@@ -467,6 +467,8 @@ class storePage extends Page{
 
     searchProviderStores() {
 
+        event.preventDefault();
+
         if(window.isXHRloading == true) return;
 
         window.isXHRloading = true;

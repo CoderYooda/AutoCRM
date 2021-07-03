@@ -24,7 +24,7 @@ trait ABCP
     protected $user = null;
 
     protected $errors = [
-        401 => [
+        403 => [
             'search' => 'Forbidden',
             'return' => 'Not auth'
         ],
@@ -174,8 +174,6 @@ trait ABCP
         if ($method == 'POST') {
             $context['http']['content'] = http_build_query($params);
         }
-
-        $result = [];
 
         try {
             $result = file_get_contents($full_path, null, stream_context_create($context));

@@ -265,10 +265,9 @@ class providerCartDialog extends Modal{
 
         let form_element = this.current_dialog.querySelector('form');
 
-        window.axform.send(form_element, (response) => {
-            if(response.status === 200) {
-                this.finitaLaComedia(true);
-            }
+        window.axform.send(form_element, ({response}) => {
+            if(response.status === 200) this.finitaLaComedia(true);
+            else window.notification.notify('error', response.data.message);
         });
     }
 
