@@ -149,6 +149,7 @@ class createEntrance extends Modal{
             url: 'providerorder/'+ id +'/select',
             data: {refer:this.root_dialog.id}
         }).then((resp)=> {
+            console.log(resp.data.items)
             this.items.setItems(resp.data.items);
 
             let info_container = object.root_dialog.querySelector('#entrance_info_block');

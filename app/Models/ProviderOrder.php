@@ -96,7 +96,8 @@ class ProviderOrder extends Model
                 unset($products[$key]);
             }
         }
-        return $products;
+
+        return $products->values();
     }
 
     public function getProductCount($product_id)

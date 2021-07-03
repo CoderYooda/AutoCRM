@@ -282,7 +282,7 @@ class ProviderOrdersController extends Controller
             if ($provider_order->exists) {
                 $store = Store::find($request['store_id']);
 
-                if ($store->id !== $provider_order->store->id) {
+                if (!$provider_order->store || $store->id !== $provider_order->store->id) {
                     foreach ($provider_order->entrances as $entrance) {
                         $entrance->migrateInStore($store);
                     }

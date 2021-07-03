@@ -254,8 +254,6 @@ class ArmTek implements ProviderInterface
 
         $items = $this->query('/ws_order/createOrder', $params, 'POST');
 
-        dd($items);
-
         $this->createProviderOrder($data);
 
         return true;

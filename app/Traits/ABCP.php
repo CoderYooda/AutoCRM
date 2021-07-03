@@ -345,8 +345,6 @@ trait ABCP
         //Делаем заказ, не затрагивая корзину ЛК
         $response = $this->query('basket/order', $params, 'POST');
 
-        dd($response);
-
         foreach ($response['orders'] as $order_id => $orderInfo) {
             CartProviderOrder::query()->create([
                 'company_id' => $this->user->company_id,

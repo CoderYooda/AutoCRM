@@ -304,8 +304,6 @@ class Berg implements ProviderInterface
 
         $response = $this->query('/ordering/place_order', $params, 'POST'); //Подтверждение заказа
 
-        dd($response);
-
         $this->createProviderOrder($data);
 
         return true;
