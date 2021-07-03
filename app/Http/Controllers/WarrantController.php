@@ -142,9 +142,7 @@ class WarrantController extends Controller
 
         event(new ModelWasStored($warrant->company_id, 'WarrantStored'));
 
-        return response()->json([
-            'message' => $message
-        ]);
+        return response()->json();
     }
 
     public function delete($id, Request $request)
