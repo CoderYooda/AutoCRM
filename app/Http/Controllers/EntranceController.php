@@ -97,8 +97,6 @@ class EntranceController extends Controller
 
                 $form_count = (int)$product['count'];
 
-                dd($entrance_count + $form_count, $provider_count);
-
                 if($entrance_count + $form_count > $provider_count){
                     $messages['products[' . $index . '][count]'][] = 'Кол-во не может быть больше чем в заявке поставщику';
                 }
