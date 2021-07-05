@@ -97,7 +97,7 @@ class selectShipmentDialog extends Modal {
 
         Object.values(shipment.products).forEach(item => {
             let p_article = item.article;
-            let p_count = item.pivot.count;
+            let p_count = item.count;
             let p_name = item.name;
 
             html += '<div class="tr_result">' +

@@ -101,7 +101,8 @@ class ShipmentController extends Controller
     {
         $class = 'selectShipmentDialog';
 
-        $shipments = Shipment::with('products')->where('company_id', Auth::user()->company_id)
+        $shipments = Shipment::with('products')
+            ->where('company_id', Auth::user()->company_id)
             ->when(isset($request['string']), function ($q) use ($request) {
                 $q->where('foundstring', 'LIKE', '%' . str_replace(["-","!","?",".", ""],  "", trim($request['string'])) . '%');
             })
@@ -119,7 +120,6 @@ class ShipmentController extends Controller
         foreach($shipments as $shipment){
             $shipment->load('products');
         }
-
 
         $view = $request['inner'] ? 'select_shipment_inner' : 'select_shipment';
 

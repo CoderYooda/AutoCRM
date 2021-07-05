@@ -38,7 +38,7 @@
             <span class="item-title _500">На своем складе / на других</span>
             <div class="item-except font-weight-bolder h-1x">
                 <span id="total_price">
-                   {{ $product->getCountSelfOthers() }}
+                   {{ $product->getEntrancesCount() }}
                 </span>
             </div>
             <div class="item-tag tag hide">

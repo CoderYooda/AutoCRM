@@ -3,31 +3,6 @@
 use App\Models\Partner;
 use App\Models\User;
 
-Route::get('/test', function () {
-    $document = \App\Models\Document::find(28);
-
-    $data = json_decode($document['data'], true);
-
-    $view_name = $data['data']['view'];
-
-    $view = view($view_name)->with([
-        'data' => $data['data'],
-        'barcode' => $document->barcode
-    ]);
-
-//    $user = User::query()->first();
-//
-//    Auth::login($user);
-//
-//    $parnter = Partner::query()->first();
-//
-//    Auth::guard('referals')->login($parnter);
-//
-//    Auth::guard('referals')->user();
-
-    return $view;
-});
-
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login')->name('PostLogin');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
