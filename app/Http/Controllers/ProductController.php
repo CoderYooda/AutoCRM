@@ -211,9 +211,7 @@ class ProductController extends Controller
 
         $tag = 'productDialog' . ($product->id ?? '');
 
-        if(!$product) {
-            PermissionController::canByPregMatch('Создавать товары');
-        }
+        if(!$product) PermissionController::canByPregMatch('Создавать товары');
 
         $category_select = $request['category_select'] ?? $product->category_id ?? 2;
 

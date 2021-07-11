@@ -47,6 +47,9 @@ class warrantDialog extends Modal{
     }
 
     save(elem){
+
+        event.preventDefault();
+
         if(window.isXHRloading) return;
 
         window.axform.send(elem, (e) => {
