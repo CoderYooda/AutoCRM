@@ -12,9 +12,19 @@ class entranceRefundDialog extends Modal{
 
     init(){
 
-        this.root_dialog.getElementsByTagName('form')[0].addEventListener('WarrantStored', () => {
-            let id = this.root_dialog.querySelector('input[name=id]').value;
-            if(id !== null) this.fresh(id);
+        let dialogEvents = [
+            'WarrantStored',
+        ];
+
+        dialogEvents.forEach(dialogEvent => {
+            this.current_dialog.addEventListener(dialogEvent,  (e) => {
+
+                let id = this.current_dialog.querySelector('input[name=id]').value;
+                if(id !== null){
+                    let root_id = this.current_dialog.id;
+                    this.fresh(id);
+                }
+            });
         });
 
         let id = this.current_dialog.dataset.id;

@@ -208,7 +208,6 @@ class SettingsController extends Controller
 //        Setting::create(['name' => 'Способ ведения складского учёта', 'company_id' => $company->id, 'model' => 'RRC',  'type' => 'select', 'key' => 'rrc_name', 'value' => 'fifo']);
         Setting::create(['name' => 'Источник цены', 'company_id' => $company->id, 'model' => 'PriceSource',  'type' => 'select', 'key' => 'price_source', 'value' => 'purchase']);
         Setting::create(['name' => 'Интернет магазин', 'company_id' => $company->id, 'model' => 'ShopEnabled',  'type' => 'select', 'key' => 'shop_enabled', 'value' => '0']);
-
     }
 
     public static function createCompanyDefaultPriceToProduct($company,$price)
@@ -221,17 +220,13 @@ class SettingsController extends Controller
     {
         PermissionController::canByPregMatch('Редактировать настройки');
 
-        $company = Auth::user()->company()->first();
-//        $company = Company::firstOrNew(['id' => $request['id']]);
-//        $company->name = $request['company_name'];
-//        $company->save();
+        $company = Auth::user()->company;
 
         $settings = Setting::owned()->get();
 
         foreach($settings as $setting){
             if($request[$setting->key] != null){
-                $setting->value = $request[$setting->key];
-                $setting->save();
+                $setting->update(['value' => $request[$setting->key]]);
             }
         }
 

@@ -30,6 +30,10 @@
                             @foreach($prices as $price)
                                 <option value="{{ $price->id }}" @if($price->id == $setting->value) selected @endif>{{ strtoupper($price->name) }}</option>
                             @endforeach
+                        @elseif($setting->model == 'enableDocumentNDS')
+                            @foreach(['Нет', 'Да'] as $index => $value)
+                                <option value="{{ $index }}" @if($index == $setting->value) selected @endif>{{ $value }}</option>
+                            @endforeach
                         @endif
                     </select>
                 @else

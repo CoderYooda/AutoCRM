@@ -194,6 +194,11 @@ class storePage extends Page{
         this.debouneArticleCartAmount(element, count);
     }
 
+    setArticleCartAmount(element) {
+        let amount = Number(element.value);
+        this.changeArticleCartAmount(element, amount);
+    }
+
     saveArticleCartAmount(element, count) {
 
         let target_element = element.closest('.table_item');
@@ -292,6 +297,9 @@ class storePage extends Page{
         let target_element = element.closest('.table_item');
 
         let type = target_element.dataset.type;
+
+        console.log(this.items, type)
+        console.log(this.items[type])
 
         let service_input = document.querySelector('[name="service_key"]');
 

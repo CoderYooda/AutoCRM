@@ -1144,11 +1144,14 @@
         <td class="R0C9">
             <div style="OVERFLOW: hidden; HEIGHT: 15px; WIDTH: 100%"><span></span></div>
         </td>
+        @if($company->getSettingField('Показывать поле НДС при печати'))
         <td colspan="7">
             <div style="OVERFLOW: hidden; HEIGHT: 15px; WIDTH: 100%"><span style="WHITE-SPACE: nowrap">В&nbsp;том&nbsp;числе</span>
             </div>
         </td>
+        @endif
     </tr>
+    @if($company->getSettingField('Показывать поле НДС при печати'))
     <tr class="R0">
         <td><span></span></td>
         <td class="R0C9"><span></span></td>
@@ -1158,6 +1161,7 @@
         <td><span></span></td>
         <td></td>
     </tr>
+    @endif
     <tr class="R24">
         <td>
             <div style="OVERFLOW: hidden; HEIGHT: 13px; WIDTH: 100%"><span></span></div>
@@ -1272,6 +1276,7 @@
             <div style="OVERFLOW: hidden; HEIGHT: 11px; WIDTH: 100%"></div>
         </td>
     </tr>
+    @if($company->getSettingField('Показывать поле НДС при печати'))
     <tr class="R0">
         <td><span></span></td>
         <td class="R22C12"><span style="WHITE-SPACE: nowrap">В&nbsp;том&nbsp;числе:</span></td>
@@ -1280,6 +1285,7 @@
         <td class="R0C9"><span></span></td>
         <td class="R29C11" colspan="7"><span style="WHITE-SPACE: nowrap">М.П.&nbsp;(штампа)</span></td>
     </tr>
+    @endif
     <tr class="R2">
         <td>
             <div style="OVERFLOW: hidden; HEIGHT: 11px; WIDTH: 100%"><span></span></div>

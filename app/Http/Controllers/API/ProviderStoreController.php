@@ -139,6 +139,8 @@ class ProviderStoreController extends Controller
 
                 $stores[$type][$key]['count'] = $amount;
             }
+
+            $stores[$type] = array_values($stores[$type]);
         }
 
         return $stores;

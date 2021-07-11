@@ -213,38 +213,40 @@
         <td colspan=4 class=xl66>Итого:</td>
         <td colspan=5 class=xl77>{{ correct_price($data['products']['price_with_nds']) }}</td>
     </tr>
-    <tr height=17 style='height:12.75pt'>
-        <td height=17 style='height:12.75pt'></td>
-        <td class=xl67></td>
-        <td class=xl67></td>
-        <td class=xl67></td>
-        <td class=xl67></td>
-        <td class=xl67></td>
-        <td class=xl67></td>
-        <td class=xl67></td>
-        <td class=xl67></td>
-        <td class=xl67></td>
-        <td class=xl67></td>
-        <td class=xl67></td>
-        <td class=xl67></td>
-        <td class=xl67></td>
-        <td class=xl67></td>
-        <td class=xl67></td>
-        <td class=xl67></td>
-        <td class=xl67></td>
-        <td class=xl67></td>
-        <td class=xl67></td>
-        <td class=xl67></td>
-        <td class=xl67></td>
-        <td class=xl67></td>
-        <td class=xl67></td>
-        <td class=xl67></td>
-        <td class=xl67></td>
-        <td colspan=5 class=xl66>В том числе НДС:</td>
-        <td class=xl67></td>
-        <td class=xl67></td>
-        <td colspan=5 class=xl77>{{ correct_price($data['products']['nds']) }}</td>
-    </tr>
+    @if($company->getSettingField('Показывать поле НДС при печати'))
+        <tr height=17 style='height:12.75pt'>
+            <td height=17 style='height:12.75pt'></td>
+            <td class=xl67></td>
+            <td class=xl67></td>
+            <td class=xl67></td>
+            <td class=xl67></td>
+            <td class=xl67></td>
+            <td class=xl67></td>
+            <td class=xl67></td>
+            <td class=xl67></td>
+            <td class=xl67></td>
+            <td class=xl67></td>
+            <td class=xl67></td>
+            <td class=xl67></td>
+            <td class=xl67></td>
+            <td class=xl67></td>
+            <td class=xl67></td>
+            <td class=xl67></td>
+            <td class=xl67></td>
+            <td class=xl67></td>
+            <td class=xl67></td>
+            <td class=xl67></td>
+            <td class=xl67></td>
+            <td class=xl67></td>
+            <td class=xl67></td>
+            <td class=xl67></td>
+            <td class=xl67></td>
+            <td colspan=5 class=xl66>В том числе НДС:</td>
+            <td class=xl67></td>
+            <td class=xl67></td>
+            <td colspan=5 class=xl77>{{ correct_price($data['products']['nds']) }}</td>
+        </tr>
+    @endif
     <tr height=17 style='height:12.75pt'>
         <td height=17 style='height:12.75pt'></td>
         <td class=xl67></td>

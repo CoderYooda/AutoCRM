@@ -17,7 +17,7 @@
                 </div>
                 <div class="edit-cart-count @if($store['count'] < 1) d-none @endif">
                     <button class="fa fa-minus pci left" onclick="store.decrementArticleCartAmount(this, {{ $store['packing'] }});" aria-hidden="true"></button>
-                    <input class="provider-cart-input" type="text" disabled value="{{ $store['count'] }}" />
+                    <input class="provider-cart-input" type="text" onkeyup="store.setArticleCartAmount(event.target)" value="{{ $store['count'] }}" />
                     <button class="fa fa-plus pci right" onclick="store.incrementArticleCartAmount(this, {{ $store['packing'] }});" aria-hidden="true"></button>
                 </div>
             </div>

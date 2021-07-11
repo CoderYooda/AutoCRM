@@ -114,8 +114,6 @@ class DocumentController extends Controller
 
         $data['view'] = $view_name;
 
-
-
         if($request->doc == 'client-order') {
 
             $clientOrder = ClientOrder::find($request->id);
@@ -238,9 +236,12 @@ class DocumentController extends Controller
 
         $view_name = $data['data']['view'];
 
+        $company = Auth::user()->company;
+
         return view($view_name)->with([
             'data' => $data['data'],
-            'barcode' => $document->barcode
+            'barcode' => $document->barcode,
+            'company' => $company
         ]);
     }
 

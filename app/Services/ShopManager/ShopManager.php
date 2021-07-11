@@ -13,11 +13,15 @@ class ShopManager
 
     public function __construct()
     {
+        $user = Auth::user();
+
+        if($user) return $this->shop = $user->shop;
+
         $url = request()->getHost();
 
         $domainParams = explode('.', $url);
 
-        $isOurDomain = isset($domainParams[1]) && $domainParams[1] == getenv('APP_DOMAIN');
+        $isOurDomain = isset($domainParams[1]) && $domainParams[1] == env('APP_DOMAIN');
 
         $field = $isOurDomain ? 'subdomain' : 'domain';
         $domain = $isOurDomain ? $domainParams[0] : $url;

@@ -8,11 +8,20 @@ class Socket{
         this.init();
     }
 
+    getCookie(name) {
+        let cookie = {};
+        document.cookie.split(';').forEach(function(el) {
+            let [k,v] = el.split('=');
+            cookie[k.trim()] = v;
+        })
+        return cookie[name];
+    }
+
     init(){
         let unprinted = document.getElementById('unprinted');
         if(unprinted){
 
-            console.log(window.socket_host + ':' + window.socket_port);
+            console.log(window.location.hostname + ':' + window.socket_port);
 
             axios({
                 method: 'get',
@@ -23,10 +32,10 @@ class Socket{
                     broadcaster: 'socket.io',
                     auth: {
                         headers: {
-                            Authorization: window.token
+                            // Authorization: window.token,
                         }
                     },
-                    host: window.socket_host + ':' + window.socket_port
+                    host: window.location.hostname + ':' + window.socket_port
                 });
 
                 this.echo
