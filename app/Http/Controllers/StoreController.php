@@ -303,6 +303,7 @@ class StoreController extends Controller
         if ($request['view_as'] == 'json' && $request['target'] == 'ajax-table-client_orders') {
             return view(get_template() . '.client_orders.elements.table_container', compact('request', 'data'));
         }
+
         return view(get_template() . '.client_orders.index', compact('request', 'data'));
     }
 

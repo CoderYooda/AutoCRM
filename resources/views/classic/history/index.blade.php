@@ -39,11 +39,11 @@
                 <div class="form-group d-flex mb-10">
                     <label class="no-wrap" for="date_filter">Период</label>
                     <input id="date_filter" type="text" name="date_filter" value="{{ request('dates_range') }}" class="form-control date_filter input_as_link" placeholder="за всё время">
-                    <button type="button" onclick="window.actions.resetDate()" class="right-remove"><i class="fa fa-remove"></i></button>
+                    <button type="button" onclick="actions.resetDate()" class="right-remove"><i class="fa fa-remove"></i></button>
                 </div>
                 <div class="form-group d-flex mb-10">
                     <label class="no-wrap" for="pay_status">Тип записи</label>
-                    <div class="dropdown" onclick="window.helper.openModal(this, event)">
+                    <div class="dropdown" onclick="helper.openModal(this, event)">
                         <input id="type" type="text" name="type" value="{{ request('type') }}" class="form-control type input_as_link" placeholder="не выбрано" >
                         <div class="dropdown_container">
                             <div class="arrow"></div>

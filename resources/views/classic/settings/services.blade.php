@@ -22,7 +22,7 @@
         </div>
 
         <div class="tab-content w-100">
-            <div id="tab_providerorders" class="tab-pane active">
+            <div id="tab_providerorders" data-simplebar="init" class="tab-pane active" style="height: calc(100vh - 220px);">
                 <div class="statistic-row row-sm mt-0">
 
                     @foreach($services as $service)

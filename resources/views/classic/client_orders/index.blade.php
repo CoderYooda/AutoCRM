@@ -18,10 +18,9 @@
                         <div class="dropdown_container">
                             <div class="arrow"></div>
                             <span onclick="store.setField('clientorder_status', null, 'не выбрано', this)" class="element">Не выбрано</span>
-                            <span onclick="store.setField('clientorder_status', 'active', 'Активен', this)" class="element">Активен</span>
-                            <span onclick="store.setField('clientorder_status', 'canceled', 'Отменен', this)" class="element">Отменен</span>
-                            <span onclick="store.setField('clientorder_status', 'full', 'Укомплектован', this)" class="element">Укомплектован</span>
-                            <span onclick="store.setField('clientorder_status', 'complete', 'Выполнен', this)" class="element">Выполнен</span>
+                            @foreach(\App\Models\Order::$statuses as $index => $status)
+                            <span onclick="store.setField('clientorder_status', '{{ $index }}', '{{ $status }}', this)" class="element">{{ $status }}</span>
+                            @endforeach
                         </div>
                     </div>
                     <button type="button" onclick="store.setField('clientorder_status', null, 'не выбрано')" class="right-remove"><i class="fa fa-remove"></i></button>

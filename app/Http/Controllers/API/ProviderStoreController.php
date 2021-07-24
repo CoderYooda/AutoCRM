@@ -32,20 +32,22 @@ class ProviderStoreController extends Controller
         $manufacturers = [];
         $errors = [];
 
-        foreach ($providers->activated() as $service_key => $provider) {
+        if($request->search) {
+            foreach ($providers->activated() as $service_key => $provider) {
 
-            try {
-                $counts[$service_key] = $request->search ? $provider->searchBrandsCount((string)$request->search) : [];
-            } catch (\Exception $exception) {
+                try {
+                    $counts[$service_key] = $request->search ? $provider->searchBrandsCount((string)$request->search) : [];
+                } catch (\Exception $exception) {
 
-                $code = $exception->getCode();
+                    $code = $exception->getCode();
 
-                $counts[$service_key] = [];
-                if ($code && $code != 404) $errors[$service_key] = Providers::getErrorMessageByCode($code);
-            }
+                    $counts[$service_key] = [];
+                    if ($code && $code != 404) $errors[$service_key] = Providers::getErrorMessageByCode($code);
+                }
 
-            if ($service_key == $request->selected_service) {
-                $manufacturers = $counts[$service_key];
+                if ($service_key == $request->selected_service) {
+                    $manufacturers = $counts[$service_key];
+                }
             }
         }
 
@@ -58,7 +60,7 @@ class ProviderStoreController extends Controller
         ]);
     }
 
-    public function getStores(Request $request, CartInterface $cart)
+    public function getStores(Request $request)
     {
         $stores = $this->getWarehouses($request);
 

@@ -214,6 +214,9 @@ class Helper{
         } else {
             className = classNameStr;
         }
+
+        console.log(className)
+
         if(className !== 'undefined') {
             if(!window[className]) {
                 //Теперь ошибки будет показывать, проще ориентироваться

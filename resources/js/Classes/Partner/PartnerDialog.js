@@ -54,33 +54,40 @@ class partnerDialog extends Modal{
 
         let birthday_input = this.current_dialog.querySelector('input[name=birthday]');
 
-        this.bithdayFlatpkr = window.flatpickr(birthday_input, {
-            allowInput: true,
-            dateFormat: "d.m.Y",
-        });
-
-        window.IMask(birthday_input, {
+        let birthdayMask = window.IMask(birthday_input, {
                 mask: Date,
                 min: new Date(1910, 0, 1),
                 max: new Date(2090, 0, 1),
-                lazy: false
+                lazy: true
             }
         );
 
-        let issued_input = this.current_dialog.querySelector('input[name=issued_date]');
-        this.issuedDateFlatpkr = window.flatpickr(issued_input, {
+        this.bithdayFlatpkr = window.flatpickr(birthday_input, {
             allowInput: true,
             dateFormat: "d.m.Y",
+            onChange: (selectedDates, dateStr, instance) => {
+                birthdayMask.value = dateStr
+            },
         });
 
-        window.IMask(issued_input, {
+        let issued_input = this.current_dialog.querySelector('input[name=issued_date]');
+
+        let issuedMask = window.IMask(issued_input, {
                 mask: Date,
                 //pattern: 'd-m-Y',
                 min: new Date(1910, 0, 1),
                 max: new Date(2090, 0, 1),
-                lazy: false
+                lazy: true
             }
         );
+
+        this.issuedDateFlatpkr = window.flatpickr(issued_input, {
+            allowInput: true,
+            dateFormat: "d.m.Y",
+            onChange: (selectedDates, dateStr, instance) => {
+                issuedMask.value = dateStr
+            },
+        });
     }
 
     setRole(element, role) {

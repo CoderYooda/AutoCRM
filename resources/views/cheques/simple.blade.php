@@ -15,24 +15,25 @@
                 <div class="w-100 h-100 text-center">
 
                     <div class="border-left h-100 border-right white">
-                        <div class="w-100 all-center border-top border-bottom ov-hidden" style="height: 20%; position: relative;">
+                        <div class="w-100 all-center border-top border-bottom ov-hidden" style="position: relative;">
                             <span>{{ auth()->user()->company->official_name }}</span>
                         </div>
 
-                        <div class="all-center" style="height: 35%; max-width: 100%; position: relative;"><b>{{ $product->name }}</b></div>
+                        <div class="all-center" style="max-width: 100%; position: relative;"><b>{{ $product->name }}</b></div>
 
-                        <div class="border-top" style="height: 15%; position: relative;">
-                            Артикул:  <b> {{ $product->article }} </b><br>
-                            Производитель: <b> {{ $product->supplier->name  }} </b>
+                        <div class="border-top" style="position: relative;">
+                            Производитель: <b>{{ $product->supplier->name  }}</b>
+                            <br>
+                            Артикул: <b> {{ $product->article }} </b>
                         </div>
-                        <div class="border-top" style="height: 10%; position: relative;"><b>{{ $product->price ?? '0.0 Р' }} руб.</b></div>
+                        <div class="border-top" style="position: relative;"><b>{{ $product->price ?? '0.0 Р' }} руб.</b></div>
 
-                        <div class="d-flex border-top border-bottom" style="height: 10%; position: relative;">
+                        <div class="d-flex border-top border-bottom" style="position: relative;">
                             <div class="flex-1 border-right p-5">{{ \Carbon\Carbon::now()->format('d.m.Y') }}</div>
                             <div class="flex-1 all-center">шт</div>
                         </div>
 
-                        <div class="h-32-text border-bottom no-wrap text-ov-hidden" style="height: 10%; position: relative;">Подпись __________</div>
+                        <div class="h-32-text no-wrap text-ov-hidden" style="position: relative;">Подпись __________</div>
                     </div>
 
                 </div>

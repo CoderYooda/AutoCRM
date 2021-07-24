@@ -62,8 +62,6 @@ class actionsPage{
         //this.loadCategory(this.root_category, true, true);
         this.searchInit();
         this.initDatesFilter();
-
-        new Tabs('history_tabs');
     }
 
     setField(option, value = null, text, elem = null){

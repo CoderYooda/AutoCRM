@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\CompanyController;
 use App\Http\Controllers\API\ProviderStoreController;
 use Illuminate\Http\Request;
 use \App\Http\Controllers\Admin\UserController;
+use function foo\func;
 
 class DialogController extends Controller
 {
@@ -26,6 +27,7 @@ class DialogController extends Controller
             'selectWarrant'             => [WarrantController::class, 'selectDialog'],
             //ClientOrder
             'selectClientOrder'         => [ClientOrdersController::class, 'selectDialog'],
+            'clientOrderDialog'         => [ClientOrdersController::class, 'clientorderDialog'],
             'clientorderDialog'         => [ClientOrdersController::class, 'clientorderDialog'],
             //Document
             'documentDialog'            => [DocumentController::class, 'dialog'],

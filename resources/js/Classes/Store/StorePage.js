@@ -182,10 +182,11 @@ class storePage extends Page{
 
         let current_count = Number(input_element.value);
 
-        if(count < 1) {
-            target_element.querySelector('.add-to-cart').classList.remove('d-none');
-            target_element.querySelector('.edit-cart-count').classList.add('d-none');
-        }
+        // Если количество поставили 0, то скрыть добавление
+        // if(count < 1) {
+        //     target_element.querySelector('.add-to-cart').classList.remove('d-none');
+        //     target_element.querySelector('.edit-cart-count').classList.add('d-none');
+        // }
 
         if(count < 0 && current_count <= 0 || count > 0 && current_count >= 999) return;
 
@@ -297,9 +298,6 @@ class storePage extends Page{
         let target_element = element.closest('.table_item');
 
         let type = target_element.dataset.type;
-
-        console.log(this.items, type)
-        console.log(this.items[type])
 
         let service_input = document.querySelector('[name="service_key"]');
 
@@ -961,7 +959,7 @@ class storePage extends Page{
                 {min_with: 90, width: 90, name: 'ID',table_name: 'id'},
                 {min_with: 130, width: 'auto', name: 'Покупатель', table_name: 'partner_name'},
                 {min_with: 60, width: 150, name: 'Оплата', table_name: 'pays', transform: 'transform_ico'},
-                {min_with: 150, width: 200, name: 'Скидка (₽)', table_name: 'discount'},
+                {min_with: 150, width: 200, name: 'Скидка', table_name: 'discount'},
                 {min_with: 150, width: 200, name: 'Сумма', table_name: 'summ', transform: 'transform_price'},
                 {min_with: 150, width: 200, name: 'Итого', table_name: 'itogo', transform: 'transform_price'},
                 {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
@@ -996,7 +994,7 @@ class storePage extends Page{
                 {min_with: 180, width: 200, name: 'Статус', table_name: 'status', transform: 'transform_status'},
                 {min_with: 130, width: 'auto', name: 'Покупатель', table_name: 'partner_name'},
                 {min_with: 150, width: 200, name: 'Сумма', table_name: 'summ', transform: 'transform_price'},
-                {min_with: 90, width: 110, name: 'Скидка', table_name: 'discount', transform: 'transform_price'},
+                {min_with: 90, width: 110, name: 'Скидка', table_name: 'discount'},
                 {min_with: 150, width: 200, name: 'Итого', table_name: 'itogo', transform: 'transform_price'},
                 {min_with: 150, width: 150, name: 'Дата', table_name: 'created_at'},
             ];
@@ -1081,7 +1079,7 @@ class storePage extends Page{
         let object = this;
         let searchFn;
         let search_field = document.getElementById("search");
-        
+
         if(search_field){
             searchFn = window.helper.debounce((e) => {
 

@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Services\ProviderService\Contract\CartInterface;
 use App\Services\ProviderService\Providers;
+use App\Services\ProviderService\Services\Providers\AutoUnion;
+use App\Services\ProviderService\Services\Providers\FourDot;
 use App\Services\ProviderService\Services\Providers\Motex;
 use App\Services\ProviderService\Services\Cart\CartDatabase;
 use App\Services\ProviderService\Services\Providers\AutoEuro;
@@ -51,6 +53,8 @@ class AppProviderStoreService extends ServiceProvider
             ShateM::class,
             Motex::class,
             AutoTrade::class,
+            AutoUnion::class,
+//            FourDot::class,
         ], [ ProviderInterface::class ]);
 
         $this->app->bind(Providers::class, function (Application $app) {

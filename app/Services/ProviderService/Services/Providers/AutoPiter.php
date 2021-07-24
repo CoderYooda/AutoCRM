@@ -7,12 +7,10 @@ use App\Models\Company;
 use App\Services\ProviderService\Contract\ProviderInterface;
 use App\Services\ShopManager\ShopManager;
 use App\Traits\CartProviderOrderCreator;
-use Cache;
 use Exception;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Auth;
 use SoapClient;
-use function Couchbase\defaultDecoder;
 
 class AutoPiter implements ProviderInterface
 {

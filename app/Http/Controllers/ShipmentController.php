@@ -422,6 +422,13 @@ class ShipmentController extends Controller
 
         foreach ($shipments as $index => $shipment) {
             $shipments[$index]['partner_name'] = $shipment->partner->official_name;
+
+            $discount = $shipment->discount;
+
+            if($shipment->inpercents) $discount .= '%';
+            else $discount = decimal_price($discount) . ' ₽';
+
+            $shipments[$index]['discount'] = $discount;
         }
 
         return $shipments;

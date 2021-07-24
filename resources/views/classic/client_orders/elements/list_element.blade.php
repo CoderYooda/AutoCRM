@@ -10,7 +10,7 @@
     </td>
     <td>
         <span class="text-sm">
-            {{ $client_order->discount }}@if($client_order->inpercents) % @else р @endif
+            {{ $client_order->discount }} @if($client_order->inpercents) % @else р @endif
         </span>
     </td>
     <td>

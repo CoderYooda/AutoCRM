@@ -444,7 +444,7 @@
         <td class=xl65></td>
         <td class=xl65></td>
         <td class=xl65></td>
-        <td colspan=3 rowspan=2 class=xl117>А К Т</td>
+        <td colspan=3 rowspan=2 class=xl117></td>
         <td colspan=3 rowspan=2 class=xl118 style='border-bottom:1.0pt solid black'></td>
         <td colspan=5 rowspan=2 class=xl121 style='border-bottom:1.0pt solid black'>{{ $data['created_at'] }}</td>
         <td class=xl85></td>
@@ -489,7 +489,7 @@
         <td class=xl65></td>
         <td class=xl65></td>
         <td class=xl65></td>
-        <td class=xl87 colspan=4 style='mso-ignore:colspan'>о списании товаров</td>
+        <td class=xl87 colspan=4 style='mso-ignore:colspan'>А К Т о списании товаров</td>
         <td class=xl65></td>
         <td class=xl65></td>
         <td class=xl65></td>
@@ -757,8 +757,8 @@
         <td class=xl65></td>
         <td class=xl65></td>
         <td class=xl65></td>
-        <td class=xl95></td>
         <td class=xl95>Итого</td>
+        <td class=xl95></td>
         <td class=xl96 style='border-top:none'>&nbsp;</td>
         <td class=xl65></td>
         <td class=xl65></td>

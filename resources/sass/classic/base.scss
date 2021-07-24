@@ -1470,6 +1470,9 @@ input:-moz-placeholder { /* Firefox 18- */
 .d-flex{
     display: flex!important;
 }
+.flex-wrap {
+    flex-wrap: wrap !important;
+}
 .no-wrap{
     white-space: nowrap;
 }

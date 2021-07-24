@@ -377,6 +377,7 @@ class ClientOrdersController extends Controller
                 $query->whereIn('partner_id', $request['provider']);
             })
             ->when($request['clientorder_status'] != null, function ($query) use ($request) {
+
                 $query->where('status', $request['clientorder_status']);
             })
             ->when($request['accountable'] != [], function ($query) use ($request) {
@@ -408,6 +409,13 @@ class ClientOrdersController extends Controller
                 'ico' => $client_order->status
             ];
             $client_orders[$key]['partner_name'] = $client_order->partner->official_name;
+
+            $discount = $client_order->discount;
+
+            if($client_order->inpercents) $discount .= '%';
+            else $discount = decimal_price($discount) . ' ₽';
+
+            $client_orders[$key]['discount'] = $discount;
         }
 
         return $client_orders;

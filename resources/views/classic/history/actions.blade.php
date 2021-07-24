@@ -13,9 +13,9 @@
                     <div class="sl-date text-muted">{{$action->created_at->diffForHumans()}}</div>
                     <p>
                         @php
-                            $modelName = mb_strtolower($action->model);
+                            $modelName = Str::camel($action->model);
                             $dialogName = $modelName . 'Dialog';
-                            $dialogParams = '&' . $modelName . '_id=' . $action->model_id
+                            $dialogParams = '&' . strtolower($modelName) . '_id=' . $action->model_id
                         @endphp
                         <a onclick="openDialog( '{{ $dialogName }}', '{{ $dialogParams }}' )" class="text-info">{{ $action->message }}</a>, {{ $action->user->roles->first()->name }}: {{ $action->user->partner->outputName() }}
                     </p>

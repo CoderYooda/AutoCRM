@@ -237,6 +237,7 @@ class Order extends Model
                     ->setSum($totalPrice)
                     ->setDescription('Оплата заказа в интернет магазине №' . $this->id)
                     ->getPaymentUrl();
+
             }
 
             $this->update([

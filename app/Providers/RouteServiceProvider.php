@@ -42,7 +42,7 @@ class RouteServiceProvider extends ServiceProvider
             $this->mapApiRoutes();
             $this->mapWebRoutes();
         }
-        else if($subdomain == 'www' || $subdomain == getenv('APP_DOMAIN')) {
+        else if($subdomain === 'www' || $subdomain == getenv('APP_DOMAIN')) {
             $this->mapLandingWebRoutes();
         }
         else {
