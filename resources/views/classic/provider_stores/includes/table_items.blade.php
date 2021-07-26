@@ -26,7 +26,7 @@
                     <input
                         class="provider-cart-input"
                         type="text"
-                        onkeyup="store.setArticleCartAmount(event.target)"
+                        onchange="store.setArticleCartAmount(event.target)"
                         value="{{ $store['count'] }}"
                         min="0"
                     />

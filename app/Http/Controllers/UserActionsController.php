@@ -87,7 +87,7 @@ class UserActionsController extends Controller
                 $query->where('model', $request['type']);
             })
             ->when($request['dates_range'] != null, function($query) use ($request) {
-                $query->whereBetween('created_at', [Carbon::parse($request['dates'][0]), Carbon::parse($request['dates'][1])]);
+                $query->whereBetween('created_at', [Carbon::parse($request['dates'][0])->startOfDay(), Carbon::parse($request['dates'][1])->endOfDay()]);
             })
             ->groupBy('user_actions.id')
             ->orderBy($field, $dir)

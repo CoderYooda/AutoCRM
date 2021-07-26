@@ -214,7 +214,10 @@ class Partner extends Model
     }
 
     public function getBirthday(){
-        return $this->birthday ? Carbon::parse($this->birthday)->format('d.m.Y') : 'Не указано';
+
+        $date = Carbon::createFromFormat('Y-m-d', $this->birthday);
+
+        return $this->birthday ? $date->format('d.m.Y') : 'Не указана';
     }
 
     public function getBarCode(){

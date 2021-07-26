@@ -70,7 +70,7 @@ class ProfitLiga implements ProviderInterface
 
         foreach ($response as $item) {
             $results[] = [
-                'brand' => $item['brand'],
+                'brand' => strlen($item['brand']) ? $item['brand'] : 'Не указано',
                 'article' => $item['article'],
                 'desc' => $item['description']
             ];

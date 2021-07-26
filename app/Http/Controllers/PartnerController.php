@@ -148,6 +148,7 @@ class PartnerController extends Controller
         $phones = $partner->upsertPhones($request['phones'], $request['phones_main']);
 
         $partner->save();
+
         PassportController::upsertPassport($request, $partner);
 //        $car = CarController::upsertPassport($request);
         $partner->phones()->sync($phones->pluck('id'));

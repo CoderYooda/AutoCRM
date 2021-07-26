@@ -18,9 +18,11 @@
     <br/>
     <span style="font-weight: 800;font-size: 14px;letter-spacing: 0.06em;color: #404040;margin-top: 0;z-index: 1;">Осталось только оплатить заказ.</span>
 
-    <div style="margin-top: 20px; text-align: center;">
-        <a target="_blank" style="background: #1F98E9;border-radius: 4px;font-weight: bold;font-size: 14px;margin-top: 24px;letter-spacing: 0.04em;padding: 6px 24px;color: #FFFFFF;text-decoration: unset;" href="{{ $order->tinkoff_url }}">Оплатить</a>
-    </div>
+    @if($order->payment_url)
+        <div style="margin-top: 20px; text-align: center;">
+            <a target="_blank" style="background: #1F98E9;border-radius: 4px;font-weight: bold;font-size: 14px;margin-top: 24px;letter-spacing: 0.04em;padding: 6px 24px;color: #FFFFFF;text-decoration: unset;" href="{{ $order->payment_url }}">Оплатить</a>
+        </div>
+    @endif
 
 </div>
 
