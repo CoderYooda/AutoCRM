@@ -27,11 +27,13 @@
             </div>
 
         </div>
+        @if(count($system_messages))
         <div class="box-lister box ml-0">
             <div id="system_messages-container" class="box-content">
                 @include(get_template() . '.history.system_messages')
             </div>
         </div>
+        @endif
         <div class="content-rightside">
             {{--<button onclick="openDialog('entranceDialog')" class="button primary mb-15 w-100">Оформить поступление</button>--}}
             <div class="box w-290 p-15 filter-panel">

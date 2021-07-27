@@ -149,8 +149,8 @@
         </div>
 
         <div class="modal-footer">
-            <button type="submit" onclick="{{ $class }}.finitaLaComedia()" class="button white">Закрыть</button>
-            <button type="submit" onclick="{{ $class }}.save(this)" class="button primary pull-right">Сохранить</button>
+            <button type="button" onclick="{{ $class }}.finitaLaComedia()" class="button white">Закрыть</button>
+            <button type="button" onclick="{{ $class }}.save(this)" class="button primary pull-right">Сохранить</button>
         </div>
         <div class="system_message">
 
