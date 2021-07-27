@@ -26,7 +26,7 @@
     <div class="form-group fl @if(isset($partner) && $partner['type'] != 0) d-none @endif">
         <label>Дата выдачи</label>
         <div class="input-group mb-2">
-            <input type="text" name="issued_date" value="{{ $partner->passport->getIssuedDate() ?? '' }}" class="form-control date_picker entrance" placeholder="Дата выдачи" @if(isset($partner) && $partner['type'] != 0) disabled @endif>
+            <input type="text" name="issued_date" value="{{ $partner && $partner->passport ? $partner->passport->getIssuedDate() : '' }}" class="form-control date_picker entrance" placeholder="Дата выдачи" @if(isset($partner) && $partner['type'] != 0) disabled @endif>
         </div>
     </div>
 
