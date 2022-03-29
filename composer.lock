@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "979c856efc5ca3a884d5e3920ac56fa8",
+    "content-hash": "10751252afb9afcf7682ce05dcc6e208",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -752,16 +752,16 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "1.6.1",
+            "version": "1.8.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "239400de7a173fe9901b9ac7c06497751f00727a"
+                "reference": "337e3ad8e5716c15f9657bd214d16cc5e69df268"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/239400de7a173fe9901b9ac7c06497751f00727a",
-                "reference": "239400de7a173fe9901b9ac7c06497751f00727a",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/337e3ad8e5716c15f9657bd214d16cc5e69df268",
+                "reference": "337e3ad8e5716c15f9657bd214d16cc5e69df268",
                 "shasum": ""
             },
             "require": {
@@ -774,24 +774,24 @@
             },
             "require-dev": {
                 "ext-zlib": "*",
-                "phpunit/phpunit": "~4.8.36 || ^5.7.27 || ^6.5.8"
+                "phpunit/phpunit": "~4.8.36 || ^5.7.27 || ^6.5.14 || ^7.5.20 || ^8.5.8 || ^9.3.10"
             },
             "suggest": {
-                "zendframework/zend-httphandlerrunner": "Emit PSR-7 responses"
+                "laminas/laminas-httphandlerrunner": "Emit PSR-7 responses"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.6-dev"
+                    "dev-master": "1.7-dev"
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "GuzzleHttp\\Psr7\\": "src/"
-                },
                 "files": [
                     "src/functions_include.php"
-                ]
+                ],
+                "psr-4": {
+                    "GuzzleHttp\\Psr7\\": "src/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -799,12 +799,33 @@
             ],
             "authors": [
                 {
+                    "name": "Graham Campbell",
+                    "email": "hello@gjcampbell.co.uk",
+                    "homepage": "https://github.com/GrahamCampbell"
+                },
+                {
                     "name": "Michael Dowling",
                     "email": "mtdowling@gmail.com",
                     "homepage": "https://github.com/mtdowling"
                 },
                 {
+                    "name": "George Mponos",
+                    "email": "gmponos@gmail.com",
+                    "homepage": "https://github.com/gmponos"
+                },
+                {
+                    "name": "Tobias Nyholm",
+                    "email": "tobias.nyholm@gmail.com",
+                    "homepage": "https://github.com/Nyholm"
+                },
+                {
+                    "name": "Márk Sági-Kazár",
+                    "email": "mark.sagikazar@gmail.com",
+                    "homepage": "https://github.com/sagikazarmark"
+                },
+                {
                     "name": "Tobias Schultze",
+                    "email": "webmaster@tubo-world.de",
                     "homepage": "https://github.com/Tobion"
                 }
             ],
@@ -819,7 +840,25 @@
                 "uri",
                 "url"
             ],
-            "time": "2019-07-01T23:21:34+00:00"
+            "support": {
+                "issues": "https://github.com/guzzle/psr7/issues",
+                "source": "https://github.com/guzzle/psr7/tree/1.8.5"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/GrahamCampbell",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/Nyholm",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/guzzlehttp/psr7",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-03-20T21:51:18+00:00"
         },
         {
             "name": "intervention/image",
@@ -1874,6 +1913,9 @@
                 "request",
                 "response"
             ],
+            "support": {
+                "source": "https://github.com/php-fig/http-message/tree/master"
+            },
             "time": "2016-08-06T14:39:51+00:00"
         },
         {
@@ -2083,6 +2125,10 @@
                 }
             ],
             "description": "A polyfill for getallheaders.",
+            "support": {
+                "issues": "https://github.com/ralouphie/getallheaders/issues",
+                "source": "https://github.com/ralouphie/getallheaders/tree/develop"
+            },
             "time": "2019-03-08T08:55:37+00:00"
         },
         {
@@ -3846,78 +3892,6 @@
             "time": "2019-08-11T13:17:40+00:00"
         },
         {
-            "name": "cybercog/laravel-ban",
-            "version": "4.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/cybercog/laravel-ban.git",
-                "reference": "c41fed8d1e9c3ec987b610b29f2fcb3950f6281d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/cybercog/laravel-ban/zipball/c41fed8d1e9c3ec987b610b29f2fcb3950f6281d",
-                "reference": "c41fed8d1e9c3ec987b610b29f2fcb3950f6281d",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/database": "5.5.*|5.6.*|5.7.*|5.8.*|^6.0",
-                "illuminate/events": "5.5.*|5.6.*|5.7.*|5.8.*|^6.0",
-                "illuminate/support": "5.5.*|5.6.*|5.7.*|5.8.*|^6.0",
-                "php": "^7.1.3"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2.10",
-                "mockery/mockery": "^1.0",
-                "orchestra/database": "~3.5.0|~3.6.0|~3.7.0|~3.8.0|^4.0",
-                "orchestra/testbench": "~3.5.0|~3.6.0|~3.7.0|~3.8.0|^4.0",
-                "phpunit/phpunit": "^7.5|^8.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Cog\\Laravel\\Ban\\Providers\\BanServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Cog\\Contracts\\Ban\\": "contracts/",
-                    "Cog\\Laravel\\Ban\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Anton Komarev",
-                    "email": "anton@komarev.com",
-                    "homepage": "https://komarev.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Laravel Ban simplify blocking and banning Eloquent models.",
-            "homepage": "https://github.com/cybercog/laravel-ban",
-            "keywords": [
-                "Justice",
-                "arrest",
-                "ban",
-                "block",
-                "cog",
-                "cybercog",
-                "eloquent",
-                "forbid",
-                "jail",
-                "laravel",
-                "restrict",
-                "trait",
-                "user"
-            ],
-            "time": "2019-09-26T00:13:27+00:00"
-        },
-        {
             "name": "doctrine/instantiator",
             "version": "1.2.0",
             "source": {
@@ -4083,57 +4057,6 @@
                 "fixtures"
             ],
             "time": "2018-07-12T10:23:15+00:00"
-        },
-        {
-            "name": "gigablah/sphinxphp",
-            "version": "2.0.8",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/gigablah/sphinxphp.git",
-                "reference": "6d5e97fdd33c1129ca372203d1330827c1cbc46c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/gigablah/sphinxphp/zipball/6d5e97fdd33c1129ca372203d1330827c1cbc46c",
-                "reference": "6d5e97fdd33c1129ca372203d1330827c1cbc46c",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "3.7.*",
-                "satooshi/php-coveralls": "dev-master"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Sphinx": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Andrew Aksyonoff",
-                    "homepage": "http://sphinxsearch.com/"
-                }
-            ],
-            "description": "Sphinx Search PHP API",
-            "homepage": "http://sphinxsearch.com/",
-            "keywords": [
-                "api",
-                "search",
-                "sphinx"
-            ],
-            "time": "2013-08-22T08:05:44+00:00"
         },
         {
             "name": "hamcrest/hamcrest-php",
@@ -5772,94 +5695,6 @@
             "time": "2016-10-03T07:35:21+00:00"
         },
         {
-            "name": "shakinm/laravel5-tinkoff",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/shakinm/laravel5-tinkoff.git",
-                "reference": "9b607eb0956a682f8e8b464f8e7e7589379dd806"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/shakinm/laravel5-tinkoff/zipball/9b607eb0956a682f8e8b464f8e7e7589379dd806",
-                "reference": "9b607eb0956a682f8e8b464f8e7e7589379dd806",
-                "shasum": ""
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Shakinm\\Tinkoff\\TinkoffServiceProvider"
-                    ],
-                    "aliases": {
-                        "Tinkoff": "Shakinm\\Tinkoff\\TinkoffFacade"
-                    }
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Shakinm\\Tinkoff\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Mikhail Shakin",
-                    "email": "m.shakin@digitalwand.ru"
-                }
-            ],
-            "description": "Package - Tinkoff Merchant API",
-            "time": "2018-03-02T07:38:02+00:00"
-        },
-        {
-            "name": "sngrl/sphinxsearch",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/sngrl/sphinxsearch.git",
-                "reference": "dc50f1b629d3e7e686afb1c9cf32b5c9b27f590c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/sngrl/sphinxsearch/zipball/dc50f1b629d3e7e686afb1c9cf32b5c9b27f590c",
-                "reference": "dc50f1b629d3e7e686afb1c9cf32b5c9b27f590c",
-                "shasum": ""
-            },
-            "require": {
-                "gigablah/sphinxphp": "2.0.8",
-                "illuminate/support": "~5.0",
-                "php": ">=5.3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "sngrl\\SphinxSearch": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "sngrl",
-                    "email": "reserved@mail.ru"
-                }
-            ],
-            "description": "Laravel package to query Sphinxsearch in Laravel 5",
-            "homepage": "http://github.com/sngrl/sphinxsearch",
-            "keywords": [
-                "laravel",
-                "laravel 5",
-                "sphinx",
-                "sphinxsearch"
-            ],
-            "time": "2017-11-03T07:09:56+00:00"
-        },
-        {
             "name": "theseer/tokenizer",
             "version": "1.1.3",
             "source": {
@@ -5959,7 +5794,9 @@
         "php": "^7.1.3",
         "ext-curl": "*",
         "ext-json": "*",
-        "ext-simplexml": "*"
+        "ext-simplexml": "*",
+        "ext-mysql_xdevapi": "*"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "2.2.0"
 }
