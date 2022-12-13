@@ -34,7 +34,7 @@
         "@fullcalendar/timegrid": "^4.3.0",
         "@fullcalendar/timeline": "^4.3.0",
         "@simonwep/selection-js": "^1.6.0",
-        "@yaireo/tagify": "^3.9.3",
+        "@yaireo/tagify": "^4.9.8",
         "bootstrap.native": "^2.0.27",
         "chart.js": "^2.9.3",
         "choices.js": "^9.0.1",
